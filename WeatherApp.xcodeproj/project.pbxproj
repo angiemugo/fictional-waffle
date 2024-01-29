@@ -19,6 +19,8 @@
 		FDD62D272B68179300A58F2B /* NetworkClientHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD62D262B68179300A58F2B /* NetworkClientHelpers.swift */; };
 		FDD62D292B6817DD00A58F2B /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD62D282B6817DD00A58F2B /* DateFormatter.swift */; };
 		FDD62D2C2B6817FF00A58F2B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD62D2B2B6817FF00A58F2B /* NetworkClient.swift */; };
+		FDD62D2E2B681DC700A58F2B /* WeatherClient+Today.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD62D2D2B681DC700A58F2B /* WeatherClient+Today.swift */; };
+		FDD62D302B68202000A58F2B /* WeatherClient+forecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD62D2F2B68202000A58F2B /* WeatherClient+forecast.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,8 @@
 		FDD62D262B68179300A58F2B /* NetworkClientHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClientHelpers.swift; sourceTree = "<group>"; };
 		FDD62D282B6817DD00A58F2B /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		FDD62D2B2B6817FF00A58F2B /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
+		FDD62D2D2B681DC700A58F2B /* WeatherClient+Today.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeatherClient+Today.swift"; sourceTree = "<group>"; };
+		FDD62D2F2B68202000A58F2B /* WeatherClient+forecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeatherClient+forecast.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +99,8 @@
 				FDD62D262B68179300A58F2B /* NetworkClientHelpers.swift */,
 				FDD62D282B6817DD00A58F2B /* DateFormatter.swift */,
 				FDD62D2B2B6817FF00A58F2B /* NetworkClient.swift */,
+				FDD62D2D2B681DC700A58F2B /* WeatherClient+Today.swift */,
+				FDD62D2F2B68202000A58F2B /* WeatherClient+forecast.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -173,9 +179,11 @@
 				FD98EB952B67A16500556CC0 /* ContentView.swift in Sources */,
 				FDD62D272B68179300A58F2B /* NetworkClientHelpers.swift in Sources */,
 				FDD62D2C2B6817FF00A58F2B /* NetworkClient.swift in Sources */,
+				FDD62D302B68202000A58F2B /* WeatherClient+forecast.swift in Sources */,
 				FDD62D232B68170900A58F2B /* Logger.swift in Sources */,
 				FDD62D1F2B6816AC00A58F2B /* URLBuilder.swift in Sources */,
 				FDD62D252B68175D00A58F2B /* Environment.swift in Sources */,
+				FDD62D2E2B681DC700A58F2B /* WeatherClient+Today.swift in Sources */,
 				FDD62D1C2B67FB9A00A58F2B /* WeatherService.swift in Sources */,
 				FD98EB932B67A16500556CC0 /* WeatherAppApp.swift in Sources */,
 				FDD62D212B6816DD00A58F2B /* WeatherClientPaths.swift in Sources */,

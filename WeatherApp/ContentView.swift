@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
-struct ForecastModel {
+struct ForecastModel: Decodable {
     var day: String
     var weather: String
     var temperature: String
 }
 
-struct TodayWeatherModel {
+struct TodayWeatherModel: Decodable {
     var minTemp: Int
     var currentTemp: Int
     var maxTemp: Int

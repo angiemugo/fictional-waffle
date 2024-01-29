@@ -25,7 +25,7 @@ enum Network {
 protocol NetworkClient: AnyObject {
     var headers: Network.HTTPHeaders { get }
     
-    func get<R: Decodable>(_ url: URL, headers: Network.HTTPHeaders?, completed: @escaping (Result<R, WeatherClientError>) -> Void)
+    func get<T: Decodable>(_ url: URL, headers: Network.HTTPHeaders?) async throws -> T
 }
 
 class DefaultNetworkClient: NetworkClient {
@@ -41,9 +41,6 @@ class DefaultNetworkClient: NetworkClient {
         decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Full)
         
         var headers = [String:String]()
-        if let apiToken = apiToken {
-            headers["Authorization"] = "Bearer \(apiToken)"
-        }
         defaultHeaders = headers
     }
     
@@ -51,10 +48,10 @@ class DefaultNetworkClient: NetworkClient {
         defaultHeaders
     }
     
-    func get<R: Decodable>(_ url: URL, headers: Network.HTTPHeaders? = nil, completed: @escaping (Result<R, WeatherClientError>) -> Void) {
+    func get<T: Decodable>(_ url: URL, headers: Network.HTTPHeaders? = nil) async throws -> T {
         let request = buildRequest(method: .GET, url: url, headers: headers)
         print(request.url?.absoluteURL ?? "")
-        executeRequest(request: request, completed: completed)
+        return try await executeRequest(request: request)
     }
     
     private func initRequest(url: URL, headers: Network.HTTPHeaders? = [:]) -> URLRequest {
@@ -76,37 +73,10 @@ class DefaultNetworkClient: NetworkClient {
         return request
     }
     
-    private func executeRequest<T: Decodable>(request: URLRequest, completed: @escaping (Result<T, WeatherClientError>) -> Void
-    ) {
+    private func executeRequest<T: Decodable>(request: URLRequest) async throws -> T {
         DebugEnvironment.log.debug("Request: \(request.httpMethod ?? "") \(request.url?.absoluteString ?? "")")
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            var completeResult: Result<T, WeatherClientError>?
-            
-            if let error = NetworkClientHelpers.extractError(response: response, error: error) {
-                completeResult = .failure(error)
-            } else if let data = data {
-                DebugEnvironment.log.trace(String(data: data, encoding: .utf8) ?? "")
-                do {
-                    DebugEnvironment.log.trace(String(data: data, encoding: .utf8) ?? "")
-                    let result = try self.decoder.decode(T.self, from: data)
-                    completeResult = .success(result)
-                } catch let decodingError as Swift.DecodingError {
-                    completeResult = .failure(.decodingError(decodingError))
-                } catch {
-                    completeResult = .failure(.genericError(error))
-                }
-            } else {
-                completeResult = .failure(.unsupportedResponseError)
-            }
-            
-            DispatchQueue.main.async {
-                guard let completeResult = completeResult else {
-                    fatalError("Something is wrong, no result!")
-                }
-                completed(completeResult)
-            }
-        }
-        task.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        return try decoder.decode(T.self, from: data)
     }
     
 }
