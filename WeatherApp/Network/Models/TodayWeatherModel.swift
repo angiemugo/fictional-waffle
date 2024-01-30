@@ -15,7 +15,7 @@ struct TodayWeatherModel: Decodable {
 }
 
 struct SysInfo: Decodable {
-    let country: String
+    let country: String?
 }
 
 struct Weather: Decodable {

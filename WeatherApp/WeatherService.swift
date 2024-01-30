@@ -11,7 +11,8 @@ import SwiftUI
 @MainActor
 class WeatherService: ObservableObject {
     @Published var weatherToday: TodayWeatherUIModel?
-    @Published private var groupedModel = [String: [ForecastUIModel]]()
+    @Published var groupedModel = [String: [ForecastUIModel]]()
+    @AppStorage("theme") private var theme: Theme?
 
     let locationManager: LocationManager
     let client: WeatherClient
@@ -27,12 +28,11 @@ class WeatherService: ObservableObject {
 
     func fetchWeatherForecast() async throws {
         let ungroupedForecast = try await client.getWeatherForecast(lat: coordinates.0, lon: coordinates.1)
-        var ungroupedUIModel = ungroupedForecast.list.map { $0.toUIModel() }
-        var grouped = Dictionary(grouping: ungroupedUIModel, by: { $0.dayOfWeek })
-
+        let ungroupedUIModel = ungroupedForecast.list.map { $0.toUIModel() }
+        groupedModel = Dictionary(grouping: ungroupedUIModel, by: { $0.dayOfWeek })
     }
 
     func fetchTodayWeather() async throws {
-        weatherToday =  try await client.getTodayWeather(lat: coordinates.0, lon: coordinates.1).toUIModel()
+        weatherToday =  try await client.getTodayWeather(lat: coordinates.0, lon: coordinates.1).toUIModel(theme ?? Theme.forest)
     }
 }

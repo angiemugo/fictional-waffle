@@ -8,9 +8,15 @@
 import SwiftUI
 
 extension TodayWeatherModel {
-    func toUIModel() -> TodayWeatherUIModel {
-        return TodayWeatherUIModel(locationName: "\(name), \(sys.country)",
-            backgroundImage: BackgroundImage(rawValue: weather.first?.main ?? "")?.background ?? Image(systemName: "clouds"),
+    func toUIModel(_ theme: Theme) -> TodayWeatherUIModel {
+        var location = ""
+        if let country = sys.country {
+            location = "\(name), \(country)"
+        } else {
+            location = name
+        }
+        return TodayWeatherUIModel(locationName: location,
+                                   backgroundImage: BackgroundImage.create(rawValue: weather.first?.main ?? "", theme: theme.rawValue).background,
                                    min: main.tempMin.toString(),
                                    current: main.temp.toString(),
                                    max: main.tempMax.toString())
@@ -26,18 +32,39 @@ struct TodayWeatherUIModel {
 }
 
 enum BackgroundImage: String {
-    case sunny
-    case cloudy = "clouds"
-    case rainy
+    case forestSunny
+    case forestCloudy = "forestClouds"
+    case forestRainy
+    case seaSunny
+    case seaCloudy
+    case seaRainy
+    case none
+
+    static func create(rawValue: String, theme: String) -> Self {
+        let name = "\(theme)\(rawValue.capitalized)"
+        if let bgImage = BackgroundImage(rawValue: name) {
+            return bgImage
+        } else {
+            return .none
+        }
+    }
 
     var background: Image {
         switch self {
-        case .sunny:
+        case .forestSunny:
             return Image("forest_sunny")
-        case .cloudy:
+        case .forestCloudy:
             return Image("forest_cloudy")
-        case .rainy:
+        case .forestRainy:
             return Image("forest_rainy")
+        case .seaSunny:
+            return Image("sea_sunny")
+        case .seaCloudy:
+            return Image("sea_cloudy")
+        case .seaRainy:
+            return Image("sea_rainy")
+        case .none:
+            return Image(systemName: "cloud")
         }
     }
 }
