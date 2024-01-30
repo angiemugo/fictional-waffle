@@ -8,12 +8,13 @@
 import CoreLocation
 
 extension WeatherClient {
-    func getTodayWeather(location: CLLocationCoordinate2D) async throws -> TodayWeatherModel{
+    func getTodayWeather(lat: String, lon: String, units: String = "metric") async throws -> TodayWeatherModel {
         return try await networkClient.get(urlBuilder.url(path: WeatherClientPaths.Today,
-                                                          params: ["lat": "\(location.latitude)",
-                                                                   "lon": "\(location.longitude)",
+                                                          params: ["lat": lat,
+                                                                   "lon": lon,
                                                                    // fix me: don't put this in here
-                                                                   "appid": "431c22806f9ef4fbe4f7d5f273c41cf7"]),
+                                                                   "appid": "431c22806f9ef4fbe4f7d5f273c41cf7",
+                                                                   "units": units]),
                                            headers: headers())
     }
 }

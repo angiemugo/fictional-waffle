@@ -8,6 +8,6 @@
 import Foundation
 
 enum WeatherClientPaths: String {
-    case Today = "/weather"
-    case Forecast = "/forecast"
+    case Today = "data/2.5/weather"
+    case Forecast = "data/2.5/forecast"
 }
