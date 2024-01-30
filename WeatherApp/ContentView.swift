@@ -6,41 +6,51 @@
 //
 
 import SwiftUI
-struct ForecastModel: Decodable {
-    var day: String
-    var weather: String
-    var temperature: String
-}
-
-struct TodayWeatherModel: Decodable {
-    var minTemp: Int
-    var currentTemp: Int
-    var maxTemp: Int
-}
 
 struct ContentView: View {
+    private let client = WeatherClient()
+    @StateObject var weatherService = WeatherService(locationManager: LocationManager(), client: WeatherClient())
+
     var body: some View {
-        VStack{
+        VStack {
             Image("sea_sunny", bundle: nil).resizable().aspectRatio(contentMode: .fit)
             HStack {
-                    Text("19").frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
-                    Text("25").frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
-                    Text("27").frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
+                VStack {
+                    Text((todayWeather?.main.tempMin ?? 0).toString()).frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                    Text("Min")
+                }
+                VStack {
+                    Text((todayWeather?.main.temp ?? 0).toString()).frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                    Text("Current")
+                }
+                VStack {
+                    Text((todayWeather?.main.tempMax ?? 0).toString()).frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                    Text("Max")
+                }
             }.padding(.horizontal)
-            Divider().background(Color.white).frame(height: 4)
-            ForEach(models, id: \.day) { model in
-                HStack {
-                        Text(model.day).frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
-                        Text(model.weather).frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
-                        Text(model.temp).frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
-                }.padding(.horizontal)
+                        Divider().background(Color.white).frame(height: 4)
+            ForEach(grouped.sorted(by: { $0.key > $1.key }), id: \.key) { model in
+                            HStack {
+                                Text(model.key).frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                                Text(model.value.first?.weather.first?.main ?? "").frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
+                                Text("\(model.value.first!.main.temp)").frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
+                            }.padding(.horizontal)
+                        }
+                        Spacer()
+                    }.background(Color.blue)
+            .navigationTitle(todayWeather?.name ?? "")
+        .task {
+            do {
+                try weatherService.fetchTodayWeather()
+                try weatherService.fetchTodayWeather()
+            } catch {
+                print("This is the error: \(error)")
             }
-            Spacer()
-        }.background(Color.blue)
+        }
 
     }
 }
 
-#Preview {
-    ContentView()
-}
+//#Preview {
+//    ContentView()
+//}

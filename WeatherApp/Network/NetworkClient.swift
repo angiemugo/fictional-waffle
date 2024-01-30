@@ -10,7 +10,7 @@ import Foundation
 enum Network {
     typealias HTTPHeaders = [String: String]
     
-    static let baseURL = URL(string: "https://api.openweathermap.org/data/2.5/")!
+    static let baseURL = URL(string: "https://api.openweathermap.org/")!
     
     enum HTTPMethod: String {
         case GET
@@ -33,14 +33,15 @@ class DefaultNetworkClient: NetworkClient {
     private let decoder: JSONDecoder
     private let defaultHeaders: Network.HTTPHeaders
     
-    init(_ apiToken: String? = nil) {
+    init() {
         encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .formatted(DateFormatter.iso8601Full)
         
         decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Full)
-        
-        var headers = [String:String]()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+        let headers = [String:String]()
         defaultHeaders = headers
     }
     
@@ -76,6 +77,7 @@ class DefaultNetworkClient: NetworkClient {
     private func executeRequest<T: Decodable>(request: URLRequest) async throws -> T {
         DebugEnvironment.log.debug("Request: \(request.httpMethod ?? "") \(request.url?.absoluteString ?? "")")
         let (data, response) = try await URLSession.shared.data(for: request)
+        print("This is the response: \(response)")
         return try decoder.decode(T.self, from: data)
     }
     
