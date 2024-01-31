@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension TodayWeatherModel {
-    func toUIModel(_ theme: Theme) -> TodayWeatherUIModel {
+    func toUIModel() -> TodayWeatherUIModel {
         var location = ""
         if let country = sys.country {
             location = "\(name), \(country)"
@@ -16,7 +16,7 @@ extension TodayWeatherModel {
             location = name
         }
         return TodayWeatherUIModel(locationName: location,
-                                   backgroundImage: BackgroundImage.create(rawValue: weather.first?.main ?? "", theme: theme.rawValue).background,
+                                   backgroundImage: BackgroundImage.create(rawValue: weather.first?.main ?? "").background,
                                    min: main.tempMin.toString(),
                                    current: main.temp.toString(),
                                    max: main.tempMax.toString())
@@ -32,17 +32,16 @@ struct TodayWeatherUIModel {
 }
 
 enum BackgroundImage: String {
-    case forestSunny
-    case forestCloudy = "forestClouds"
-    case forestRainy
+    case sunny
+    case cloudy = "Clouds"
+    case rainy
     case seaSunny
     case seaCloudy
     case seaRainy
     case none
 
-    static func create(rawValue: String, theme: String) -> Self {
-        let name = "\(theme)\(rawValue.capitalized)"
-        if let bgImage = BackgroundImage(rawValue: name) {
+    static func create(rawValue: String) -> Self {
+        if let bgImage = BackgroundImage(rawValue: rawValue) {
             return bgImage
         } else {
             return .none
@@ -51,11 +50,11 @@ enum BackgroundImage: String {
 
     var background: Image {
         switch self {
-        case .forestSunny:
+        case .sunny:
             return Image("forest_sunny")
-        case .forestCloudy:
+        case .cloudy:
             return Image("forest_cloudy")
-        case .forestRainy:
+        case .rainy:
             return Image("forest_rainy")
         case .seaSunny:
             return Image("sea_sunny")

@@ -7,32 +7,43 @@
 
 import Foundation
 import SwiftUI
+import Combine
+import CoreLocation
+
 
 @MainActor
 class WeatherService: ObservableObject {
     @Published var weatherToday: TodayWeatherUIModel?
     @Published var groupedModel = [String: [ForecastUIModel]]()
-    @AppStorage("theme") private var theme: Theme?
+    @Published var alertError: WeatherClientError?
 
-    let locationManager: LocationManager
-    let client: WeatherClient
+    let dataSource: RemoteDataSource
 
-    init(locationManager: LocationManager, client: WeatherClient) {
-        self.locationManager = locationManager
-        self.client = client
+    init(dataSource: RemoteDataSource) {
+        self.dataSource = dataSource
     }
 
-    var coordinates: (String, String) {
-        return ("\(locationManager.lastLocation?.coordinate.latitude ?? 0)", "\(locationManager.lastLocation?.coordinate.longitude ?? 0)")
-    }
-
-    func fetchWeatherForecast() async throws {
-        let ungroupedForecast = try await client.getWeatherForecast(lat: coordinates.0, lon: coordinates.1)
+    func fetchWeatherForecast(_ lat: String, _ lon: String) async throws {
+        let ungroupedForecast = try await dataSource.getWeatherForecast(lat: lat.description, lon: lon.description)
         let ungroupedUIModel = ungroupedForecast.list.map { $0.toUIModel() }
         groupedModel = Dictionary(grouping: ungroupedUIModel, by: { $0.dayOfWeek })
     }
 
-    func fetchTodayWeather() async throws {
-        weatherToday =  try await client.getTodayWeather(lat: coordinates.0, lon: coordinates.1).toUIModel(theme ?? Theme.forest)
+    func fetchTodayWeather(_ lat: String, _ lon: String) async throws {
+        weatherToday =  try await dataSource.getTodayWeather(lat: lat, lon: lon).toUIModel()
+    }
+
+    func onAppearAction(_ location: CLLocation) async {
+        do {
+            try await fetchTodayWeather(location.coordinate.latitude.description, location.coordinate.longitude.description)
+            try await fetchWeatherForecast(location.coordinate.latitude.description, location.coordinate.longitude.description)
+        } catch {
+            extractError(error)
+        }
+    }
+
+    func extractError(_ error: Error) {
+        let clientError = NetworkClientHelpers.extractError(response: nil, error: error)
+        alertError = clientError
     }
 }

@@ -7,15 +7,10 @@
 
 import SwiftUI
 
-enum Theme: String, CaseIterable {
-    case forest
-    case sea
-}
-
 struct ContentView: View {
     private let client = WeatherClient()
-    @StateObject var weatherService = WeatherService(locationManager: LocationManager(), client: WeatherClient())
-    @AppStorage("theme") private var theme: Theme?
+    @StateObject var locationManager = LocationManager()
+    @StateObject var weatherService = WeatherService(dataSource: RemoteDataSource(WeatherClient()))
     @State private var favorite = false
 
     var body: some View {
@@ -28,18 +23,10 @@ struct ContentView: View {
                         .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                         .foregroundStyle(.black)
                         .padding()
-                    VStack {
                         Button {
                             favorite.toggle()
                         } label: {
                             Image(systemName: favorite ? "bookmark.fill" : "bookmark")
-                        }
-
-                        Picker("Settings", systemImage: "gear", selection: $theme) {
-                            ForEach(Theme.allCases, id: \.self) {
-                                Text("\($0.rawValue.uppercased()) Theme").foregroundStyle(.black)
-                            }
-                        }
                     }
                 }
             }
@@ -81,17 +68,17 @@ struct ContentView: View {
                 }
             }.listStyle(.plain)
         }.background(Color.blue)
-            .task {
-                do {
-                    try await weatherService.fetchTodayWeather()
-                    try await weatherService.fetchWeatherForecast()
-                } catch {
-                    print("This is the error: \(error)")
+            .onReceive(locationManager.$lastLocation) { location in
+                if let location = locationManager.lastLocation {
+                    Task { await weatherService.onAppearAction(location) }
                 }
+            }
+            .sheet(item: $weatherService.alertError) { error in
+                Text(error.localizedDescription)
             }
     }
 }
 
-//#Preview {
-//    ContentView()
-//}
+#Preview {
+    ContentView()
+}
