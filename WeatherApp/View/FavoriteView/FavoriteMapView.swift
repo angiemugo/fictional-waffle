@@ -39,7 +39,7 @@ struct FavoriteMapView: View {
                     }
                 }
             }
-        }.tint(.white)
+        }.tint(.primary)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {

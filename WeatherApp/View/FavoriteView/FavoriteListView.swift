@@ -49,7 +49,7 @@ struct FavoriteListView: View {
                     addLocation()
                 } label: {
                     Image(systemName: "plus")
-                }.tint(.white)
+                }.tint(.primary)
             }.onReceive(locationManager.$lastLocation) { value in
                 Task {
                     guard let lat = value?.coordinate.latitude, let lon = value?.coordinate.longitude else { return }

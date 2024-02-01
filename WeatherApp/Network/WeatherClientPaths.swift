@@ -9,5 +9,5 @@ import Foundation
 
 enum WeatherClientPaths: String {
     case Today = "data/2.5/weather"
-    case Forecast = "data/2.5/forecast"
+    case Forecast = "data/2.5/foecast"
 }

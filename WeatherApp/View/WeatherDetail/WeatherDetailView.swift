@@ -24,7 +24,7 @@ struct WeatherDetailView: View {
         case .loading:
             ProgressView()
         case .failed(let error):
-            Text("This is the error \(error.localizedDescription)")
+            Text(error.localizedDescription)
         case .loaded(let forecastData):
             VStack {
                 Image(BackgroundImage.create(rawValue: todayModel.desc).background)
