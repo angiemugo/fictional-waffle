@@ -21,6 +21,7 @@ These are the tools we need to run the project
 3. Explore the app on an iOS device so that you have access to the location services..
 
 ## Project Structure 
+
 WeatherApp/
 │
 ├─ WeatherApp/
