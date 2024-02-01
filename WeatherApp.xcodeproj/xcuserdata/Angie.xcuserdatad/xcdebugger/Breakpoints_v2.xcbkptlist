@@ -7,169 +7,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7967956C-DC2F-4F10-91BB-DBC1AD190B52"
-            shouldBeEnabled = "No"
+            uuid = "47BCD73C-4DC6-4A29-A90C-C45876354017"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WeatherApp/WeatherDetailViewModel.swift"
+            filePath = "WeatherApp/WeatherDetail/WeatherDetailView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
-            landmarkName = "fetchWeatherForecast(_:_:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "7967956C-DC2F-4F10-91BB-DBC1AD190B52 - a5d37f1f1074449"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(1) suspend resume partial function for WeatherApp.WeatherDetailViewModel.fetchWeatherForecast(Swift.String, Swift.String) async throws -&gt; Swift.Dictionary&lt;Swift.String, Swift.Array&lt;WeatherApp.ForecastUIModel&gt;&gt;"
-                  moduleName = "WeatherApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Angie/Documents/WeatherApp/WeatherApp/WeatherDetailViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "124">
-               </Location>
-               <Location
-                  uuid = "7967956C-DC2F-4F10-91BB-DBC1AD190B52 - feca24557cb3a5f8"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(2) await resume partial function for WeatherApp.WeatherDetailViewModel.fetchWeatherForecast(Swift.String, Swift.String) async throws -&gt; Swift.Dictionary&lt;Swift.String, Swift.Array&lt;WeatherApp.ForecastUIModel&gt;&gt;"
-                  moduleName = "WeatherApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Angie/Documents/WeatherApp/WeatherApp/WeatherDetailViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "40">
-               </Location>
-               <Location
-                  uuid = "7967956C-DC2F-4F10-91BB-DBC1AD190B52 - 21a7cb334750004b"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for WeatherApp.WeatherDetailViewModel.fetchWeatherForecast(Swift.String, Swift.String) async throws -&gt; Swift.Dictionary&lt;Swift.String, Swift.Array&lt;WeatherApp.ForecastUIModel&gt;&gt;"
-                  moduleName = "WeatherApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Angie/Documents/WeatherApp/WeatherApp/WeatherDetailViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "76">
-               </Location>
-               <Location
-                  uuid = "7967956C-DC2F-4F10-91BB-DBC1AD190B52 - d51c98d260496244"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(4) suspend resume partial function for WeatherApp.WeatherDetailViewModel.fetchWeatherForecast(Swift.String, Swift.String) async throws -&gt; Swift.Dictionary&lt;Swift.String, Swift.Array&lt;WeatherApp.ForecastUIModel&gt;&gt;"
-                  moduleName = "WeatherApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Angie/Documents/WeatherApp/WeatherApp/WeatherDetailViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "48">
-               </Location>
-               <Location
-                  uuid = "7967956C-DC2F-4F10-91BB-DBC1AD190B52 - d51c98d260496244"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(4) suspend resume partial function for WeatherApp.WeatherDetailViewModel.fetchWeatherForecast(Swift.String, Swift.String) async throws -&gt; Swift.Dictionary&lt;Swift.String, Swift.Array&lt;WeatherApp.ForecastUIModel&gt;&gt;"
-                  moduleName = "WeatherApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Angie/Documents/WeatherApp/WeatherApp/WeatherDetailViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "108">
-               </Location>
-               <Location
-                  uuid = "7967956C-DC2F-4F10-91BB-DBC1AD190B52 - 6ae7ede042df001"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(1) suspend resume partial function for WeatherApp.WeatherDetailViewModel.fetchWeatherForecast(Swift.Double, Swift.Double) async throws -&gt; Swift.Dictionary&lt;Swift.String, Swift.Array&lt;WeatherApp.ForecastUIModel&gt;&gt;"
-                  moduleName = "WeatherApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Angie/Documents/WeatherApp/WeatherApp/WeatherDetailViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "108">
-               </Location>
-               <Location
-                  uuid = "7967956C-DC2F-4F10-91BB-DBC1AD190B52 - 307e2db5c20c19b0"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(2) await resume partial function for WeatherApp.WeatherDetailViewModel.fetchWeatherForecast(Swift.Double, Swift.Double) async throws -&gt; Swift.Dictionary&lt;Swift.String, Swift.Array&lt;WeatherApp.ForecastUIModel&gt;&gt;"
-                  moduleName = "WeatherApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Angie/Documents/WeatherApp/WeatherApp/WeatherDetailViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "40">
-               </Location>
-               <Location
-                  uuid = "7967956C-DC2F-4F10-91BB-DBC1AD190B52 - 3df01219da7eac03"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for WeatherApp.WeatherDetailViewModel.fetchWeatherForecast(Swift.Double, Swift.Double) async throws -&gt; Swift.Dictionary&lt;Swift.String, Swift.Array&lt;WeatherApp.ForecastUIModel&gt;&gt;"
-                  moduleName = "WeatherApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Angie/Documents/WeatherApp/WeatherApp/WeatherDetailViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "76">
-               </Location>
-               <Location
-                  uuid = "7967956C-DC2F-4F10-91BB-DBC1AD190B52 - 216de7b8f4960e1c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(4) suspend resume partial function for WeatherApp.WeatherDetailViewModel.fetchWeatherForecast(Swift.Double, Swift.Double) async throws -&gt; Swift.Dictionary&lt;Swift.String, Swift.Array&lt;WeatherApp.ForecastUIModel&gt;&gt;"
-                  moduleName = "WeatherApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Angie/Documents/WeatherApp/WeatherApp/WeatherDetailViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "48">
-               </Location>
-               <Location
-                  uuid = "7967956C-DC2F-4F10-91BB-DBC1AD190B52 - 216de7b8f4960e1c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(4) suspend resume partial function for WeatherApp.WeatherDetailViewModel.fetchWeatherForecast(Swift.Double, Swift.Double) async throws -&gt; Swift.Dictionary&lt;Swift.String, Swift.Array&lt;WeatherApp.ForecastUIModel&gt;&gt;"
-                  moduleName = "WeatherApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Angie/Documents/WeatherApp/WeatherApp/WeatherDetailViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "108">
-               </Location>
-            </Locations>
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "body"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

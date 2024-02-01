@@ -6,16 +6,7 @@
 //
 
 import SwiftUI
-
-extension Forecast {
-    func toUIModel() -> ForecastUIModel {
-        return ForecastUIModel(dayOfWeek: dtTxt.getDay(),
-                               weather: 
-                                WeatherIcons(rawValue: weather.first?.main ?? "")?.icon ?? Image(systemName: "cloud"),
-                               temp: main.temp.toString(),
-                               dtTxt: dtTxt)
-    }
-}
+import SwiftData
 
 struct ForecastUIModel {
     let dayOfWeek: String
@@ -46,5 +37,35 @@ enum WeatherIcons: String {
         case .none:
             return Image(systemName: "cloud")
         }
+    }
+}
+
+enum WeatherColor: String {
+    case cloudy = "Clouds"
+    case sunny
+    case rainy = "rain"
+    case none
+
+    static func create(rawValue: String) -> Self {
+        if let color = WeatherColor(rawValue: rawValue) {
+            return color
+        } else {
+            return .none
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .cloudy:
+            return Color(hex: "54717A")
+        case .sunny:
+            return Color(hex: "47AB2F")
+        case .rainy:
+            return Color(hex: "57575D")
+        case .none:
+            return Color(hex: "47AB2F")
+
+        }
+
     }
 }

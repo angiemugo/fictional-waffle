@@ -12,10 +12,9 @@ import MapKit
 struct FavoriteMapView: View {
     var savedLocations: [TodayWeatherUIModel]
     var current: TodayWeatherUIModel?
-    @Environment(\.modelContext) var modelContext
     @Binding var presented: Bool
-    @Binding var newLocation: CLLocationCoordinate2D
-
+    @ObservedObject var faveVM: FavoriteViewModel
+    @State private var errorString: String = ""
 
     var body: some View {
         let currentCoordinates = CLLocationCoordinate2D(latitude: current?.lat ?? 0, longitude: current?.lon ?? 0)
@@ -36,19 +35,26 @@ struct FavoriteMapView: View {
                     }
                 }.onTapGesture { position in
                     if let coordinate = proxy.convert(position, from: .local) {
-                        newLocation = coordinate
+                        saveModel(coordinate)
                         presented = false
                     }
                 }
             }
-        }.toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    presented.toggle()
-                } label: {
-                    Image(systemName: "x.square")
+        }.tint(.white)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        presented.toggle()
+                    } label: {
+                        Image(systemName: "x.square")
+                    }
                 }
             }
+    }
+
+    func saveModel(_ location: CLLocationCoordinate2D) {
+        Task {
+            await faveVM.fetchForSaved(location.latitude, location.longitude)
         }
     }
 }

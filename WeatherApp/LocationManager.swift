@@ -12,7 +12,7 @@ import CoreLocation
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     @Published var locationStatus: CLAuthorizationStatus?
-    @Published var lastLocation: CLLocation = CLLocation(latitude: 0, longitude: 0)
+    @Published var lastLocation: CLLocation?
     @Published var error: Error?
 
     static let shared = LocationManager()

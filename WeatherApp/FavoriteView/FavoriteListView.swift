@@ -8,32 +8,27 @@
 import SwiftUI
 import CoreLocation
 import SwiftData
-extension CLLocationCoordinate2D: Equatable {
-    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
-        return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
-    }
-}
 
 struct FavoriteListView: View {
+    @State private var searchText = ""
+    @State private var showMap = false
     @Query var savedLocations: [TodayWeatherUIModel]
     @Environment(\.modelContext) var modelContext
     @StateObject var locationManager = LocationManager.shared
-    @State var currentLocation: TodayWeatherUIModel?
-    @StateObject var faveVM: FavoriteViewModel
-    @State private var searchText = ""
-    @State private var showMap = false
-    @State private var newLocation = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+    @ObservedObject var faveVM: FavoriteViewModel
 
     var body: some View {
         List {
-            if let current = currentLocation {
-                Section("My Location") {
+            Section("My Location") {
+                if let _ = locationManager.lastLocation, let current = filteredLocations.first {
                     NavigationLink {
                         WeatherDetailView(detailVM: WeatherDetailViewModel(dataSource: RemoteDataSource(WeatherClient())),
                                           todayModel: current)
                     } label: {
                         FavouriteView(location: current)
                     }
+                } else {
+                    Text("We are having a problem accessing your location! Make sure your location services are turned on.")
                 }
             }
 
@@ -47,39 +42,35 @@ struct FavoriteListView: View {
                         }
                     }
             }
-        }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+        }.listRowSpacing(10)
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for a location")
             .toolbar {
                 Button {
                     addLocation()
                 } label: {
                     Image(systemName: "plus")
-                }
-            }.onChange(of: locationManager.lastLocation.coordinate) { oldValue, newValue in
+                }.tint(.white)
+            }.onReceive(locationManager.$lastLocation) { value in
                 Task {
-                    let new = try? await faveVM.fetchCurrentLocation(newValue.latitude, newValue.longitude)
-                    currentLocation = new
+                    guard let lat = value?.coordinate.latitude, let lon = value?.coordinate.longitude else { return }
+                    await faveVM.fetchCurrentLocation(lat, lon)
                 }
-            }.onReceive(faveVM.$fetchedLocations) { newLocations in
-                for newLocation in newLocations {
-                    modelContext.delete(newLocation)
+            }.onChange(of: faveVM.fetchedLocations) { oldValue, newValue in
+                for newLocation in newValue {
                     modelContext.insert(newLocation)
                 }
-            }.sheet(isPresented: $showMap) {
-                FavoriteMapView(savedLocations: savedLocations, current: currentLocation, presented: $showMap, newLocation: $newLocation)
-            }.onChange(of: newLocation) { oldValue, newValue in
-                Task {
-                    let new = try! await faveVM.fetchCurrentLocation(newValue.latitude, newValue.longitude)
-                    modelContext.insert(new)
-                }
+            }
+            .sheet(isPresented: $showMap) {
+                FavoriteMapView(savedLocations: savedLocations, current: faveVM.fetchedLocations.first, presented: $showMap, faveVM: faveVM)
             }
     }
 
+
     private var filteredLocations: [TodayWeatherUIModel] {
         if searchText.isEmpty {
-            return savedLocations
+            return faveVM.fetchedLocations
         } else {
-            return savedLocations.filter { $0.locationName.contains(searchText) }
+            return faveVM.fetchedLocations.filter { $0.locationName.contains(searchText) }
         }
     }
 
@@ -88,17 +79,10 @@ struct FavoriteListView: View {
     }
 }
 
-struct FavouriteView: View {
-    @State var location: TodayWeatherUIModel
+#Preview {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: TodayWeatherUIModel.self, configurations: config)
+    let day = TodayWeatherUIModel(locationName: "Nairobi", desc: "cloud", min: "10", current: "20", max: "30", lat: 5, lon: 10, isFavorite: false)
 
-    var body: some View {
-        VStack {
-            HStack {
-                Text(location.locationName)
-                Text(location.current)
-            }
-            Spacer()
-            Text("Min: \(location.min), Max: \(location.max)")
-        }
-    }
+    return FavoriteListView(faveVM: FavoriteViewModel(dataSource: RemoteDataSource(WeatherClient())))
 }

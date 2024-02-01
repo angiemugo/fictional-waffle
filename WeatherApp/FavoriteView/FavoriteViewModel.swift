@@ -9,17 +9,11 @@ import Foundation
 import CoreLocation
 import SwiftData
 
+@MainActor
 class FavoriteViewModel: ObservableObject {
-    enum State {
-          case empty
-          case loading
-          case failed(Error)
-          case loaded(TodayWeatherUIModel)
-      }
-
     @Published var locationManager = LocationManager.shared
-    @Published private(set) var state = State.empty
-    @Published var fetchedLocations = [TodayWeatherUIModel]()
+    @Published private(set) var fetchedLocations = [TodayWeatherUIModel]()
+    @Published private(set) var errorString = ""
 
     let dataSource: RemoteDataSource
 
@@ -31,29 +25,36 @@ class FavoriteViewModel: ObservableObject {
         return try await dataSource.getTodayWeather(lat: lat.description, lon: lon.description).toUIModel()
     }
 
-    func fetchCurrentLocation(_ lat: Double, _ lon: Double) async throws -> TodayWeatherUIModel {
-        return try await fetchTodayWeather(lat, lon)
-    }
-
-    func refreshSavedLocations(_ savedLocations: [TodayWeatherUIModel]) async throws  {
-        try await withThrowingTaskGroup(of: TodayWeatherModel.self) { group in
-            var fetchedLoc = [TodayWeatherUIModel]()
-            for location in savedLocations {
-                let fetched = try await fetchTodayWeather(location.lat, location.lon)
-                fetchedLoc.append(fetched)
-            }
-            fetchedLocations = fetchedLoc
+    func fetchForSaved(_ lat: Double, _ lon: Double) async {
+        do {
+            let location = try await fetchTodayWeather(lat, lon)
+            fetchedLocations.append(location)
+        } catch {
+            errorString = error.localizedDescription
         }
-
     }
 
-    func onAppearAction(_ location: CLLocation) async {
-        state = .loading
-            do {
-                let today = try await dataSource.getTodayWeather(lat: location.coordinate.latitude.description, lon: location.coordinate.latitude.description).toUIModel()
-                state = .loaded(today)
-            } catch {
-                state = .failed(error)
+    func fetchCurrentLocation(_ lat: Double, _ lon: Double) async {
+        do {
+            let location = try await fetchTodayWeather(lat, lon)
+            fetchedLocations.append(location)
+        } catch {
+            errorString = error.localizedDescription
+        }
+    }
+
+    func refreshSavedLocations(_ savedLocations: [TodayWeatherUIModel]) async  {
+        do {
+            try await withThrowingTaskGroup(of: TodayWeatherModel.self) { group in
+                var fetchedLoc = [TodayWeatherUIModel]()
+                for location in savedLocations {
+                    let fetched = try await fetchTodayWeather(location.lat, location.lon)
+                    fetchedLoc.append(fetched)
+                }
+                fetchedLocations = fetchedLoc
             }
+        } catch {
+            errorString = error.localizedDescription
+        }
     }
 }

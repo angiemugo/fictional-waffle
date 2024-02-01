@@ -10,31 +10,31 @@ import CoreLocation
 import SwiftData
 
 @Model class TodayWeatherUIModel {
-    var locationName: String
-    var backgroundImage: String
+    @Attribute(.unique) var locationName: String
+    var desc: String
     var min: String
     var current: String
     var max: String
     var lat: Double
     var lon: Double
-    var isFavourite: Bool
+    var isFavorite: Bool
 
-    init(locationName: String, backgroundImage: String, min: String, current: String, max: String, lat: Double, lon: Double, isFavourite: Bool) {
+    init(locationName: String, desc: String, min: String, current: String, max: String, lat: Double, lon: Double, isFavorite: Bool) {
         self.locationName = locationName
-        self.backgroundImage = backgroundImage
+        self.desc = desc
         self.min = min
         self.current = current
         self.max = max
         self.lat = lat
         self.lon = lon
-        self.isFavourite = isFavourite
+        self.isFavorite = isFavorite
     }
 }
 
 enum BackgroundImage: String {
     case sunny
     case cloudy = "Clouds"
-    case rainy
+    case rainy  = "rain"
     case seaSunny
     case seaCloudy
     case seaRainy
@@ -63,7 +63,7 @@ enum BackgroundImage: String {
         case .seaRainy:
             return "sea_rainy"
         case .none:
-            return "forest_cloudy"
+            return "forest_sunny"
         }
     }
 }

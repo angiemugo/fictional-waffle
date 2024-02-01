@@ -23,13 +23,13 @@ struct TodayWeatherModel: Decodable {
               }
 
         return TodayWeatherUIModel(locationName: location,
-                                           backgroundImage: BackgroundImage.create(rawValue: weather.first?.main ?? "").background,
-                                           min: main.tempMin.toString(),
-                                           current: main.temp.toString(),
-                                           max: main.tempMax.toString(),
+                                   desc: weather.first?.main ?? "",
+                                   min: main.tempMin.toString(),
+                                   current: main.temp.toString(),
+                                   max: main.tempMax.toString(),
                                    lat: coord.lat,
                                    lon: coord.lon,
-                                   isFavourite: false)
+                                   isFavorite: false)
     }
 }
 
@@ -52,4 +52,3 @@ struct Main: Decodable {
     let tempMin: Double
     let tempMax: Double
 }
-

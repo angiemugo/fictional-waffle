@@ -10,15 +10,14 @@ import SwiftUI
 import Combine
 import CoreLocation
 
-
 @MainActor
 class WeatherDetailViewModel: ObservableObject {
     enum State {
-          case idle
-          case loading
-          case failed(Error)
-          case loaded([String: [ForecastUIModel]])
-      }
+        case idle
+        case loading
+        case failed(Error)
+        case loaded([String: [ForecastUIModel]])
+    }
 
     @Published private(set) var state = State.idle
     @Published var locationManager = LocationManager.shared
@@ -38,12 +37,12 @@ class WeatherDetailViewModel: ObservableObject {
 
     func onAppearAction(_ lat: Double, _ lon: Double) async {
         state = .loading
-            do {
-                let forecast = try await fetchWeatherForecast(lat, lon)
-                state = .loaded(forecast)
+        do {
+            let forecast = try await fetchWeatherForecast(lat, lon)
+            state = .loaded(forecast)
 
-            } catch {
-                state = .failed(error)
-            }
+        } catch {
+            state = .failed(error)
+        }
     }
 }

@@ -14,7 +14,7 @@ struct WeatherAppApp: App {
         WindowGroup {
             NavigationView {
                 FavoriteListView(faveVM: FavoriteViewModel(dataSource: RemoteDataSource(WeatherClient())))
-            }
+            }.tint(.black)
         }.modelContainer(for: TodayWeatherUIModel.self)
     }
 }
