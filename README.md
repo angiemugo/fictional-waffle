@@ -2,8 +2,10 @@
 Weather app is a small app that uses the [open weather api](https://openweathermap.org/api) to fetch current weather data and forecast weather data. 
 
 ## Sample Screenshots 
-<img src="https://github.com/angiemugo/PokeDex/assets/23118371/13184fbb-2578-4d07-abd4-f79843d94f10" width="200" height="400" alt="Pokemons List">
-<img src="https://github.com/angiemugo/PokeDex/assets/23118371/7fe99740-7d2c-447f-bea4-a648d3c80d0a" width="200" height="400" alt="Pokemons List">
+<img src="(https://github.com/angiemugo/fictional-waffle/assets/23118371/dd7a752a-7703-49f4-a6c4-4bccace8b05a" width="200" height="400" alt="Pokemons List">
+<img src="(https://github.com/angiemugo/fictional-waffle/assets/23118371/6601e6f8-6c3d-4312-8073-44dda34ca0df)" width="200" height="400" alt="Pokemons List">
+<img src="(https://github.com/angiemugo/fictional-waffle/assets/23118371/cd8bfed2-dcfc-4225-a018-08bf5750720f)" width="200" height="400" alt="Pokemons List">
+<img src="(https://github.com/angiemugo/fictional-waffle/assets/23118371/98570c36-e530-4c91-bfc8-8aeb33db3b98)" width="200" height="400" alt="Pokemons List">
 
 ## Prerequisites
 These are the tools we need to run the project 
