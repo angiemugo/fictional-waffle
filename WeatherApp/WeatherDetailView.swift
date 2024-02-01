@@ -6,21 +6,7 @@
 //
 
 import SwiftUI
-
-extension View {
-    /// Applies the given transform if the given condition evaluates to `true`.
-    /// - Parameters:
-    ///   - condition: The condition to evaluate.
-    ///   - transform: The transform to apply to the source `View`.
-    /// - Returns: Either the original `View` or the modified `View` if the condition is `true`.
-    @ViewBuilder func `if`<Content: View>(_ condition: @autoclosure () -> Bool, transform: (Self) -> Content) -> some View {
-        if condition() {
-            transform(self)
-        } else {
-            self
-        }
-    }
-}
+import SwiftData
 
 struct WeatherDetailView: View {
     @StateObject var detailVM: WeatherDetailViewModel
@@ -40,49 +26,52 @@ struct WeatherDetailView: View {
         case .failed(let error):
             Text("This is the error \(error.localizedDescription)")
         case .loaded(let forecastData):
-            VStack {
-                ZStack(alignment: .top) {
-                    Image(todayModel.backgroundImage)
-                        .resizable().aspectRatio(contentMode: .fill)
-                    HStack {
-                        Text(todayModel.locationName)
-                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                        .foregroundStyle(.black)
-                        .padding()
-                        Button {
-                            toggleFavorite()
-                        } label: {
-                            Image(systemName: todayModel.isFavourite ? "bookmark.fill" : "bookmark")
+            GeometryReader { geom in
+                VStack {
+                    ZStack(alignment: .top) {
+                                            Image(todayModel.backgroundImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(maxWidth: .infinity)
+                            .edgesIgnoringSafeArea(.all)
+                        HStack {
+                            Text(todayModel.locationName)
+                                .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                                .foregroundStyle(.black)
+                                .padding()
+                            Button {
+                                toggleFavorite()
+                            } label: {
+                                Image(systemName: todayModel.isFavourite ? "bookmark.fill" : "bookmark")
+                            }
                         }
                     }
-                }
-                HStack {
-                    VStack {
-                        Text(todayModel.min)
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
-                        Text("Min")
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
-                    }
+                    HStack {
+                        VStack {
+                            Text(todayModel.min)
+                                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                            Text("Min")
+                                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                        }
 
-                    VStack {
-                        Text(todayModel.current)
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
+                        VStack {
+                            Text(todayModel.current)
+                                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
 
-                        Text("Current")
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
-                    }
+                            Text("Current")
+                                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
+                        }
 
-                    VStack {
-                        Text(todayModel.max)
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
-                        Text("Max")
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
-                    }
-                }.padding(.horizontal)
-                Divider()
-                    .frame(height: 1)
-                    .background(Color.white)
-                List {
+                        VStack {
+                            Text(todayModel.max)
+                                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
+                            Text("Max")
+                                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
+                        }
+                    }.padding(.horizontal)
+                    Divider()
+                        .frame(height: 1)
+                        .background(Color.white)
                     ForEach(forecastData.sorted(by: { $0.value.first!.dtTxt < $1.value.first!.dtTxt }), id: \.key) { model in
                         HStack {
                             Text(model.key)
@@ -90,10 +79,14 @@ struct WeatherDetailView: View {
                             model.value.first?.weather
                             Text(model.value.first?.temp ?? "")
                                 .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
-                        }
+                        }.padding(.vertical, 5)
+                            .padding(.horizontal)
+
                     }
-                }.listStyle(.plain)
-            }.background(Color.blue)
+                    Spacer()
+                }
+                .background(Color.green)
+            }
         }
     }
 
@@ -107,6 +100,10 @@ struct WeatherDetailView: View {
     }
 }
 
-//#Preview {
-//    ContentView(, weatherService: <#WeatherService#>)
-//}
+#Preview {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: TodayWeatherUIModel.self, configurations: config)
+    let day = TodayWeatherUIModel(locationName: "Nairobi", backgroundImage: "cloud", min: "10", current: "20", max: "30", lat: 5, lon: 10, isFavourite: false)
+
+    return WeatherDetailView(detailVM: WeatherDetailViewModel(dataSource: RemoteDataSource(WeatherClient())), todayModel: day).modelContainer(container)
+}

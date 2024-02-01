@@ -37,17 +37,18 @@ struct FavoriteListView: View {
                 }
             }
 
-            ForEach(filteredLocations) { location in
-                Section("Saved Locations") {
-                    NavigationLink {
-                        WeatherDetailView(detailVM: WeatherDetailViewModel(dataSource: RemoteDataSource(WeatherClient())),
-                                          todayModel: location)
-                    } label: {
-                        FavouriteView(location: location)
+            Section("Saved Locations") {
+                ForEach(filteredLocations) { location in
+                        NavigationLink {
+                            WeatherDetailView(detailVM: WeatherDetailViewModel(dataSource: RemoteDataSource(WeatherClient())),
+                                              todayModel: location)
+                        } label: {
+                            FavouriteView(location: location)
+                        }
                     }
-                }
             }
-        }.searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for a location")
+        }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for a location")
             .toolbar {
                 Button {
                     addLocation()
