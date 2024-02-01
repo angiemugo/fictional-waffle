@@ -11,6 +11,7 @@ struct WeatherDetailView: View {
     @StateObject var detailVM: WeatherDetailViewModel
     @Environment(\.modelContext) var modelContext
     let todayModel: TodayWeatherUIModel
+    let isFave: Bool
 
     var body: some View {
         switch detailVM.state {
@@ -74,22 +75,24 @@ struct WeatherDetailView: View {
                 Button {
                     toggleFavorite()
                 } label: {
-                    Image(systemName: todayModel.isFavorite ? "bookmark.fill" : "bookmark")
+                    Image(systemName: isFave ? "bookmark.fill" : "bookmark")
                 }
             }
         }
     }
 
     func toggleFavorite() {
-        todayModel.isFavorite.toggle()
-        modelContext.insert(todayModel)
+        if isFave {
+            modelContext.delete(todayModel)
+        } else {
+            modelContext.insert(todayModel)
+        }
     }
 }
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: TodayWeatherUIModel.self, configurations: config)
-    let day = TodayWeatherUIModel(locationName: "Nairobi", desc: "cloud", min: "10", current: "20", max: "30", lat: 5, lon: 10, isFavorite: false)
 
-    return WeatherDetailView(detailVM: WeatherDetailViewModel(dataSource: RemoteDataSource(WeatherClient())), todayModel: day).modelContainer(container)
+    return WeatherDetailView(detailVM: WeatherDetailViewModel(dataSource: RemoteDataSource(WeatherClient())), todayModel: PreviewData.shared.getFavoriteUIModel(), isFave: false).modelContainer(container)
 }

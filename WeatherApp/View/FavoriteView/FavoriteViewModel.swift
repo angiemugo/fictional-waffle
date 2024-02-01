@@ -13,7 +13,14 @@ import SwiftData
 class FavoriteViewModel: ObservableObject {
     @Published var locationManager = LocationManager.shared
     @Published private(set) var fetchedLocations = [TodayWeatherUIModel]()
-    @Published private(set) var errorString = ""
+    @Published private(set) var currentLocation: TodayWeatherUIModel?
+    @Published var showAlert = false
+
+    private(set) var errorString: String = "" {
+        didSet {
+            showAlert = errorString == ""
+        }
+    }
 
     let dataSource: RemoteDataSource
 
@@ -37,7 +44,7 @@ class FavoriteViewModel: ObservableObject {
     func fetchCurrentLocation(_ lat: Double, _ lon: Double) async {
         do {
             let location = try await fetchTodayWeather(lat, lon)
-            fetchedLocations.append(location)
+            currentLocation = location
         } catch {
             errorString = error.localizedDescription
         }

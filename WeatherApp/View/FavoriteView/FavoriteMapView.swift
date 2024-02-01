@@ -11,20 +11,19 @@ import MapKit
 
 struct FavoriteMapView: View {
     var savedLocations: [TodayWeatherUIModel]
-    var current: TodayWeatherUIModel?
     @Binding var presented: Bool
     @ObservedObject var faveVM: FavoriteViewModel
     @State private var errorString: String = ""
 
     var body: some View {
-        let currentCoordinates = CLLocationCoordinate2D(latitude: current?.lat ?? 0, longitude: current?.lon ?? 0)
+        let currentCoordinates = CLLocationCoordinate2D(latitude: faveVM.currentLocation?.lat ?? 0, longitude: faveVM.currentLocation?.lon ?? 0)
         let span =  MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10)
         let region = MKCoordinateRegion(center: currentCoordinates, span: span)
         let initialPosition = MapCameraPosition.region(region)
         NavigationView {
             MapReader { proxy in
                 Map(initialPosition: initialPosition) {
-                    if let current = current {
+                    if let current = faveVM.currentLocation {
                         Marker("\(current.locationName), \(current.current)", systemImage: "person", coordinate: currentCoordinates)
 
                     }

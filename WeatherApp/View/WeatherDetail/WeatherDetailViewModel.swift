@@ -34,7 +34,6 @@ class WeatherDetailViewModel: ObservableObject {
         return Dictionary(grouping: ungroupedUIModel, by: { $0.dayOfWeek })
     }
 
-
     func onAppearAction(_ lat: Double, _ lon: Double) async {
         state = .loading
         do {

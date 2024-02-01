@@ -33,6 +33,6 @@ struct FavouriteView: View {
 }
 
 #Preview {
-    let day = TodayWeatherUIModel(locationName: "Nairobi", desc: "cloud", min: "10", current: "20", max: "30", lat: 5, lon: 10, isFavorite: false)
+    let day = TodayWeatherUIModel(locationName: "Nairobi", desc: "cloud", min: "10", current: "20", max: "30", lat: 5, lon: 10)
     return FavouriteView(location: day)
 }

@@ -20,12 +20,12 @@ struct FavoriteListView: View {
     var body: some View {
         List {
             Section("My Location") {
-                if let _ = locationManager.lastLocation, let current = filteredLocations.first {
+                if let currentLocation = faveVM.currentLocation {
                     NavigationLink {
                         WeatherDetailView(detailVM: WeatherDetailViewModel(dataSource: RemoteDataSource(WeatherClient())),
-                                          todayModel: current)
+                                          todayModel: currentLocation, isFave: false)
                     } label: {
-                        FavouriteView(location: current)
+                        FavouriteView(location: currentLocation)
                     }
                 } else {
                     Text("We are having a problem accessing your location! Make sure your location services are turned on.")
@@ -34,16 +34,16 @@ struct FavoriteListView: View {
 
             Section("Saved Locations") {
                 ForEach(filteredLocations) { location in
-                        NavigationLink {
-                            WeatherDetailView(detailVM: WeatherDetailViewModel(dataSource: RemoteDataSource(WeatherClient())),
-                                              todayModel: location)
-                        } label: {
-                            FavouriteView(location: location)
-                        }
+                    NavigationLink {
+                        WeatherDetailView(detailVM: WeatherDetailViewModel(dataSource: RemoteDataSource(WeatherClient())),
+                                          todayModel: location, isFave: true)
+                    } label: {
+                        FavouriteView(location: location)
                     }
+                }
             }
         }.listRowSpacing(10)
-        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for a location")
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for a location")
             .toolbar {
                 Button {
                     addLocation()
@@ -61,16 +61,21 @@ struct FavoriteListView: View {
                 }
             }
             .sheet(isPresented: $showMap) {
-                FavoriteMapView(savedLocations: savedLocations, current: faveVM.fetchedLocations.first, presented: $showMap, faveVM: faveVM)
+                FavoriteMapView(savedLocations: savedLocations, presented: $showMap, faveVM: faveVM)
+            }.alert(isPresented: $faveVM.showAlert) {
+                Alert(
+                    title: Text("Error Fetching"),
+                    message: Text(faveVM.errorString),
+                    dismissButton: .default(Text("OK"))
+                )
             }
     }
 
-
     private var filteredLocations: [TodayWeatherUIModel] {
         if searchText.isEmpty {
-            return faveVM.fetchedLocations
+            return savedLocations
         } else {
-            return faveVM.fetchedLocations.filter { $0.locationName.contains(searchText) }
+            return savedLocations.filter { $0.locationName.contains(searchText) }
         }
     }
 
@@ -82,7 +87,6 @@ struct FavoriteListView: View {
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: TodayWeatherUIModel.self, configurations: config)
-    let day = TodayWeatherUIModel(locationName: "Nairobi", desc: "cloud", min: "10", current: "20", max: "30", lat: 5, lon: 10, isFavorite: false)
 
     return FavoriteListView(faveVM: FavoriteViewModel(dataSource: RemoteDataSource(WeatherClient())))
 }

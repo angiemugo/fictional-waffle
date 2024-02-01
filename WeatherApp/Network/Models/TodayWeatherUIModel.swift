@@ -17,9 +17,8 @@ import SwiftData
     var max: String
     var lat: Double
     var lon: Double
-    var isFavorite: Bool
 
-    init(locationName: String, desc: String, min: String, current: String, max: String, lat: Double, lon: Double, isFavorite: Bool) {
+    init(locationName: String, desc: String, min: String, current: String, max: String, lat: Double, lon: Double) {
         self.locationName = locationName
         self.desc = desc
         self.min = min
@@ -27,7 +26,6 @@ import SwiftData
         self.max = max
         self.lat = lat
         self.lon = lon
-        self.isFavorite = isFavorite
     }
 }
 

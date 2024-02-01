@@ -28,8 +28,7 @@ struct TodayWeatherModel: Decodable {
                                    current: main.temp.toString(),
                                    max: main.tempMax.toString(),
                                    lat: coord.lat,
-                                   lon: coord.lon,
-                                   isFavorite: false)
+                                   lon: coord.lon)
     }
 }
 

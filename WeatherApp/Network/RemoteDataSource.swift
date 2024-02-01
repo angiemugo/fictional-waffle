@@ -31,7 +31,6 @@ class RemoteDataSource {
                                                                    "appid": "431c22806f9ef4fbe4f7d5f273c41cf7",
                                                                    "units": units]),
                                            headers: headers)
-        print("This is result: \(result)")
         return result
     }
 
