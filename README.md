@@ -13,9 +13,7 @@ These are the tools we need to run the project
 - iOS 16 or newer
 
 ## Installation
-1. `$ git clone https://github.com/angiemugo/PokeDex.git`
-2. `$ cd PokeDex `
-3. `$ open PokeDex.xcodeproj `
+`$ git clone https://github.com/angiemugo/fictional-waffle.git`
 
 ## Getting started 
 1. Open the Xcode project in Xcode.
@@ -42,21 +40,21 @@ WeatherApp/
  **Testing Framework:** XCTest
 
 ## Technology
-**Architecture 
+### Architecture 
 - I used a flavor of mvvm. Since SwiftUI already implements a lot of reactivity, writing View Models for every view can be counterproductive. I therefore stuck to bareboned models and did most of the work in the views.
 
-- *Concurrency
+### Concurrency
 - I used Async await as opposed to the commonly used completion handlers. Async await handles error handling very elegantly. I used a main actor for the view models since it runs on the main loop(which is typically used to update the view)
 
-- * CI/CD
-    I implemented faslane and added two lanes
-      - ONe generates code coverage and the other runs tests
+### CI/CD
+- I implemented faslane and added two lanes
+-  ONe generates code coverage and the other runs tests
  
 
 ## App Features 
-** Show a list of all saved locations and the weather at the current location 
-** Once you tap on a location you view the current weather and the weather forecast of the location]
-** while viewing a location detail, tap on the favorite button to toggle it 
-** Save a location after tapping on it on the map 
+* Show a list of all saved locations and the weather at the current location 
+* Once you tap on a location you view the current weather and the weather forecast of the location]
+* while viewing a location detail, tap on the favorite button to toggle it 
+* Save a location after tapping on it on the map 
 
 
