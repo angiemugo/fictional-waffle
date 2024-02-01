@@ -6,29 +6,29 @@
 //
 
 import SwiftUI
+import CoreLocation
+import SwiftData
 
-extension TodayWeatherModel {
-    func toUIModel() -> TodayWeatherUIModel {
-        var location = ""
-        if let country = sys.country {
-            location = "\(name), \(country)"
-        } else {
-            location = name
-        }
-        return TodayWeatherUIModel(locationName: location,
-                                   backgroundImage: BackgroundImage.create(rawValue: weather.first?.main ?? "").background,
-                                   min: main.tempMin.toString(),
-                                   current: main.temp.toString(),
-                                   max: main.tempMax.toString())
+@Model class TodayWeatherUIModel {
+    var locationName: String
+    var backgroundImage: String
+    var min: String
+    var current: String
+    var max: String
+    var lat: Double
+    var lon: Double
+    var isFavourite: Bool
+
+    init(locationName: String, backgroundImage: String, min: String, current: String, max: String, lat: Double, lon: Double, isFavourite: Bool) {
+        self.locationName = locationName
+        self.backgroundImage = backgroundImage
+        self.min = min
+        self.current = current
+        self.max = max
+        self.lat = lat
+        self.lon = lon
+        self.isFavourite = isFavourite
     }
-}
-
-struct TodayWeatherUIModel {
-    let locationName: String
-    let backgroundImage: Image
-    let min: String
-    let current: String
-    let max: String
 }
 
 enum BackgroundImage: String {
@@ -48,22 +48,22 @@ enum BackgroundImage: String {
         }
     }
 
-    var background: Image {
+    var background: String {
         switch self {
         case .sunny:
-            return Image("forest_sunny")
+            return "forest_sunny"
         case .cloudy:
-            return Image("forest_cloudy")
+            return "forest_cloudy"
         case .rainy:
-            return Image("forest_rainy")
+            return "forest_rainy"
         case .seaSunny:
-            return Image("sea_sunny")
+            return "sea_sunny"
         case .seaCloudy:
-            return Image("sea_cloudy")
+            return "sea_cloudy"
         case .seaRainy:
-            return Image("sea_rainy")
+            return "sea_rainy"
         case .none:
-            return Image(systemName: "cloud")
+            return "forest_cloudy"
         }
     }
 }

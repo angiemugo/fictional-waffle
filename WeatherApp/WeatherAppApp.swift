@@ -6,14 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct WeatherAppApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                ContentView()
+                FavoriteListView(faveVM: FavoriteViewModel(dataSource: RemoteDataSource(WeatherClient())))
             }
-        }
+        }.modelContainer(for: TodayWeatherUIModel.self)
     }
 }

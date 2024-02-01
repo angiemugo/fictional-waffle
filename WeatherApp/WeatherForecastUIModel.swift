@@ -10,7 +10,8 @@ import SwiftUI
 extension Forecast {
     func toUIModel() -> ForecastUIModel {
         return ForecastUIModel(dayOfWeek: dtTxt.getDay(),
-                               weather: WeatherIcons(rawValue: weather.first?.main ?? "")?.icon ?? Image(systemName: "cloud"),
+                               weather: 
+                                WeatherIcons(rawValue: weather.first?.main ?? "")?.icon ?? Image(systemName: "cloud"),
                                temp: main.temp.toString(),
                                dtTxt: dtTxt)
     }
