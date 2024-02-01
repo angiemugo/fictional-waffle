@@ -47,11 +47,6 @@ WeatherApp/
 ### Concurrency
 - I used Async await as opposed to the commonly used completion handlers. Async await handles error handling very elegantly. I used a main actor for the view models since it runs on the main loop(which is typically used to update the view)
 
-### CI/CD
-- I implemented faslane and added two lanes
--  ONe generates code coverage and the other runs tests
- 
-
 ## App Features 
 * Show a list of all saved locations and the weather at the current location 
 * Once you tap on a location you view the current weather and the weather forecast of the location]
