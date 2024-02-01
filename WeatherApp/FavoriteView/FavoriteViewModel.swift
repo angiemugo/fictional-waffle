@@ -27,14 +27,14 @@ class FavoriteViewModel: ObservableObject {
         self.dataSource = dataSource
     }
 
-    func onAppear() async {
-        if let location = locationManager.lastLocation {
-            await onAppearAction(location)
-        } else {
-            state = .empty
-            // go to map view and select location
-        }
-    }
+//    func onAppear() async {
+//        if let location = locationManager.lastLocation {
+//            await onAppearAction(location)
+//        } else {
+//            state = .empty
+//            // go to map view and select location
+//        }
+//    }
 
     func fetchTodayWeather(_ lat: Double, _ lon: Double) async throws -> TodayWeatherUIModel {
         return try await dataSource.getTodayWeather(lat: lat.description, lon: lon.description).toUIModel()
