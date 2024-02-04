@@ -75,7 +75,13 @@ class DefaultNetworkClient: NetworkClient {
     
     private func executeRequest<T: Decodable>(request: URLRequest) async throws -> T {
         DebugEnvironment.log.debug("Request: \(request.httpMethod ?? "") \(request.url?.absoluteString ?? "")")
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, _): (Data, URLResponse)
+        do {
+            (data, _) = try await URLSession.shared.data(for: request)
+        } catch {
+            let error = NetworkClientHelpers.extractError(response: nil, error: error)
+            throw error ?? .unsupportedResponseError
+        }
         return try decoder.decode(T.self, from: data)
     }
 }

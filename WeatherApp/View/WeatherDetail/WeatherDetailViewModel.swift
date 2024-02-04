@@ -40,6 +40,13 @@ class WeatherDetailViewModel: ObservableObject {
             state = .loaded(forecast)
 
         } catch {
+            if case let WeatherClientError.apiError(message) = error {
+                state = .failed(error)
+            }
+
+            if case let WeatherClientError.genericError(message) = error {
+                state = .failed(error)
+            }
             state = .failed(error)
         }
     }
