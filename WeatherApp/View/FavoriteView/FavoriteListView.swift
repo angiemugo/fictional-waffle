@@ -50,9 +50,9 @@ struct FavoriteListView: View {
                 } label: {
                     Image(systemName: "plus")
                 }.tint(.primary)
-            }.onReceive(locationManager.$lastLocation) { value in
+            }.onReceive(locationManager.$locationStatus) { _ in
                 Task {
-                    guard let lat = value?.coordinate.latitude, let lon = value?.coordinate.longitude else { return }
+                    guard let lat = locationManager.lastLocation?.coordinate.latitude, let lon = locationManager.lastLocation?.coordinate.longitude else { return }
                     await faveVM.fetchCurrentLocation(lat, lon)
                 }
             }.onChange(of: faveVM.fetchedLocations) { oldValue, newValue in

@@ -20,7 +20,6 @@ class WeatherDetailViewModel: ObservableObject {
     }
 
     @Published private(set) var state = State.idle
-    @Published var locationManager = LocationManager.shared
 
     let dataSource: RemoteDataSource
 
