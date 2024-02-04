@@ -9,8 +9,8 @@ Weather app is a small app that uses the [open weather api](https://openweatherm
 
 ## Prerequisites
 These are the tools we need to run the project 
-- Xcode 15.0 or newer 
-- iOS 16 or newer
+- Xcode 15.2 or newer 
+- iOS 17.2  or newer
 
 ## Installation
 `$ git clone https://github.com/angiemugo/fictional-waffle.git`
@@ -18,7 +18,8 @@ These are the tools we need to run the project
 ## Getting started 
 1. Open the Xcode project in Xcode.
 2. Build and run the project.
-3. Explore the app on an iOS device so that you have access to the location services..
+3. Explore the app on an iOS device so that you have access to the location services.
+4. The iOS simulator gives a default location so it's recommended to use your physical device
 
 ## Project Structure 
 
@@ -33,7 +34,7 @@ WeatherApp/
 
 ## Technologies Used
  **Programming Language:** Swift 6
- **Development Environment:** Xcode 15.0
+ **Development Environment:** Xcode 15.2
  **Version Control:** Git
  **UI Framework:** SwiftUI
  **Database:** Swift Data 
@@ -42,7 +43,7 @@ WeatherApp/
 
 ## Technology
 ### Architecture 
-- I used a flavor of mvvm. Since SwiftUI already implements a lot of reactivity, writing View Models for every view can be counterproductive. I therefore stuck to bareboned models and did most of the work in the views.
+- I used a flavor of mvvm. Since SwiftUI already implements a lot of reactivity(with Combine cooked into it), writing View Models for every view can be counterproductive. I therefore stuck to bareboned models and did most of the work in the views.
 
 ### Concurrency
 - I used Async await as opposed to the commonly used completion handlers. Async await handles error handling very elegantly. I used a main actor for the view models since it runs on the main loop(which is typically used to update the view)
