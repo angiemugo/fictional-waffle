@@ -7,10 +7,11 @@
 
 import CoreLocation
 
-extension CLLocationCoordinate2D: Equatable {
-    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
-        return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
+extension CLLocation: @retroactive Comparable {
+    public static func < (lhs: CLLocation, rhs: CLLocation) -> Bool {
+        if lhs.coordinate.latitude != rhs.coordinate.latitude {
+            return lhs.coordinate.latitude < rhs.coordinate.latitude
+        }
+        return lhs.coordinate.longitude < rhs.coordinate.longitude
     }
 }
-
-

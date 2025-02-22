@@ -7,21 +7,17 @@
 
 import Foundation
 
-class URLBuilder {
-    let base: URL
+struct URLBuilder {
+    let base = Network.baseURL
 
-    init() {
-        base = Network.baseURL
-    }
-    
     func url(path: WeatherClientPaths, params: [String: String] = [:]) -> URL {
         guard let url = URL(string: path.rawValue, relativeTo: base) else {
             fatalError("Invalid path, unable to create a URL: \(path)")
         }
-        
+
         return buildURL(url: url, params: params)
     }
-    
+
     func url(path: WeatherClientPaths, params: [String: String] = [:], urlArgs: CVarArg...) -> URL {
         let path = String(format: path.rawValue, arguments: urlArgs)
         guard let url = URL(string: path, relativeTo: base) else {

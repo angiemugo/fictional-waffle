@@ -7,16 +7,15 @@
 
 import Foundation
 
-
 final class WeatherClient {
     let networkClient: NetworkClient
     let urlBuilder = URLBuilder()
 
-    init(networkClient: NetworkClient? = nil) {
-        self.networkClient = networkClient ?? DefaultNetworkClient()
+    var headers: Network.HTTPHeaders {
+        [:]
     }
 
-    func headers() -> Network.HTTPHeaders {
-        [:]
+    init(networkClient: NetworkClient = DefaultNetworkClient()) {
+        self.networkClient = networkClient
     }
 }

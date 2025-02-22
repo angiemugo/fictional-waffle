@@ -1,5 +1,5 @@
 //
-//  WeatherForecastUIModel.swift
+//  ForecastUIModel.swift
 //  WeatherApp
 //
 //  Created by Angie Mugo on 30/01/2024.
@@ -8,11 +8,27 @@
 import SwiftUI
 import SwiftData
 
-struct ForecastUIModel {
-    let dayOfWeek: String
-    let weather: Image
-    let temp: String
-    let dtTxt: Date
+@Model class ForecastUIModel {
+    @Attribute(.unique) var id: String
+    var dayOfWeek: String
+    var weather: String
+    var temp: Double
+    var dtTxt: Date
+
+    init(weather: String, dayOfWeek: String, temp: Double, dtTxt: Date) {
+        self.dayOfWeek = dayOfWeek
+        self.weather = weather
+        self.temp = temp
+        self.dtTxt = dtTxt
+        self.id = UUID().uuidString
+    }
+
+    convenience init(from fetched: Forecast) {
+        self.init(weather: fetched.weather.first?.main ?? "",
+                  dayOfWeek: fetched.dtTxt.getDay(),
+                  temp: fetched.main.temp,
+                  dtTxt: fetched.dtTxt)
+    }
 }
 
 enum WeatherIcons: String {

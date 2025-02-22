@@ -10,33 +10,42 @@ import Foundation
 
 enum WeatherClientError: Error, Identifiable {
     var id: String {
-          return UUID().uuidString
-      }
+        return UUID().uuidString
+    }
 
-    case genericError(Error)
+    case genericError(message: String)
     case apiError(message: String)
-    case bodyEncodingError(Error)
     case decodingError(Error)
-    case unsupportedResponseError
     case builderError(message: String)
     case locationError(message: String)
+
+    var errorMessage: String {
+        switch self {
+        case .genericError(let message),
+                .apiError(let message),
+                .builderError(let message),
+                .locationError(let message):
+            return message
+        case .decodingError(let error):
+            return "Decoding error: \(error.localizedDescription)"
+        }
+    }
 }
 
-
 enum NetworkClientHelpers {
-    static func extractError(response: URLResponse?, error: Error?) -> WeatherClientError? {
-        if let error = error {
-            return .genericError(error)
+    struct ErrorModel: Decodable {
+        let message: String
+    }
+
+    static func extractError(data: Data) throws {
+        do {
+            DebugEnvironment.log.trace("\(LogMessages.errorEncountered.rawValue) \(String(data: data, encoding: .utf8) ?? "")")
+            let errorModel = try JSONDecoder().decode(ErrorModel.self, from: data)
+            DebugEnvironment.log.debug("\(LogMessages.errorEncountered.rawValue) \(errorModel)")
+            throw WeatherClientError.apiError(message: errorModel.message)
+        } catch {
+            DebugEnvironment.log.debug("\(LogMessages.errorEncountered.rawValue) \(error)")
+            throw WeatherClientError.decodingError(error)
         }
-        
-        guard let response = response as? HTTPURLResponse else {
-            return .unsupportedResponseError
-        }
-        
-        if (400..<503).contains(response.statusCode) {
-            return .apiError(message: response.debugDescription)
-        }
-        
-        return nil
     }
 }
