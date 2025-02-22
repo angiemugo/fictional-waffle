@@ -19,83 +19,69 @@ struct WeatherListView: View {
 
     var body: some View {
         List {
-            Section(AppStrings.myLocation.rawValue) {
-                if let currentLocation = savedLocationsQuery.first {
-                    locationRow(currentLocation)
-                } else {
-                    Text(AppStrings.fetchingLocation.rawValue)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            Section(AppStrings.savedLocations.rawValue) {
-                if savedLocationsQuery.count <= 1 {
-                    ContentUnavailableView(AppStrings.noSavedLocations.rawValue,
-                                           systemImage: AppStrings.trayIcon.rawValue)
-                } else {
-                    savedLocationsView
-                }
-            }
+            myLocationSection
+            savedLocationsSection
         }
         .listRowSpacing(10)
-        .toolbar {
-            Button {
-                addLocation()
-            } label: {
-                Image(systemName: AppStrings.plusIcon.rawValue)
-            }
-        }
-        .sheet(isPresented: $showMap) {
-            FavoriteMapView(savedLocations: .constant(savedLocationsQuery),
-                            presented: $showMap)
-            .environmentObject(viewModel)
-        }.alert(isPresented: $viewModel.showAlert) {
-            Alert(
-                title: Text(AppStrings.errorTitle.rawValue),
-                message: Text(viewModel.errorText ?? AppStrings.genericError.rawValue),
-                dismissButton: .default(Text(AppStrings.okButton.rawValue))
-            )
-        }
-        .alert(isPresented: $viewModel.showAlert) {
-            Alert(
-                title: Text(AppStrings.errorTitle.rawValue),
-                message: Text(viewModel.errorText ?? AppStrings.genericError.rawValue),
-                primaryButton: .default(
-                    Text(ErrorMessages.tryAgain.rawValue),
-                    action: refresh
-                ),
-                secondaryButton: .cancel(Text(AppStrings.okButton.rawValue))
-            )
-        }
-        .task {
-            refresh()
-        }
-        .refreshable {
-            refresh()
-        }.onReceive(locationService.$locationStatus) { status in
-            print(status)
-        }
-//        onReceive(locationService.$locationStatus) { status in
-//            if status == .denied {
-//                print("location denied")
-//                return
-//            }
-//            await viewModel.fetchCurrentWeather(location: locationService.lastLocation!,
-//                modelContext: modelContext)
-//        }
+        .toolbar { addButton }
+        .sheet(isPresented: $showMap) { mapSheet }
+        .alert(isPresented: $viewModel.showAlert, content: errorAlert)
+        .task { refresh() }
+        .refreshable { refresh() }
+        .onReceive(locationService.$locationStatus) { handleLocationUpdate($0) }
     }
 
-    func refresh() {
-        Task {
-            let locations = savedLocations.map { $0.location.coordinate }
-            await viewModel.fetchSavedLocationsWeather(for: locations,
-                                                       modelContext: modelContext)
+    // MARK: - UI Components
+
+    private var myLocationSection: some View {
+        Section(AppStrings.myLocation.rawValue) {
+            if let currentLocation = savedLocationsQuery.first {
+                locationRow(currentLocation)
+            } else {
+                Text(AppStrings.fetchingLocation.rawValue)
+                    .foregroundStyle(.secondary)
+            }
         }
+    }
+
+    private var savedLocationsSection: some View {
+        Section(AppStrings.savedLocations.rawValue) {
+            if savedLocationsQuery.count <= 1 {
+                ContentUnavailableView(AppStrings.noSavedLocations.rawValue,
+                                       systemImage: AppStrings.trayIcon.rawValue)
+            } else {
+                savedLocationsView
+            }
+        }
+    }
+
+    private var addButton: some View {
+        Button(action: { showMap.toggle() }) {
+            Image(systemName: AppStrings.plusIcon.rawValue)
+        }
+    }
+
+    private var mapSheet: some View {
+        FavoriteMapView(savedLocations: .constant(savedLocationsQuery),
+                        presented: $showMap)
+        .environmentObject(viewModel)
+    }
+
+    private func errorAlert() -> Alert {
+        Alert(
+            title: Text(AppStrings.errorTitle.rawValue),
+            message: Text(viewModel.errorText ?? AppStrings.genericError.rawValue),
+            primaryButton: .default(
+                Text(ErrorMessages.tryAgain.rawValue),
+                action: refresh
+            ),
+            secondaryButton: .cancel(Text(AppStrings.okButton.rawValue))
+        )
     }
 
     @ViewBuilder
     private var savedLocationsView: some View {
-        ForEach(savedLocationsQuery[1...]) { location in
+        ForEach(savedLocationsQuery.dropFirst()) { location in
             locationRow(location)
         }
     }
@@ -113,12 +99,25 @@ struct WeatherListView: View {
                 deleteFave(weather)
             } label: {
                 Label(AppStrings.delete.rawValue, systemImage: AppStrings.trashIcon.rawValue)
-            }.tint(Color(.systemRed))
+            }.tint(.red)
         }
     }
 
-    private func addLocation() {
-        showMap.toggle()
+    // MARK: - Actions
+
+    private func refresh() {
+        Task {
+            let locations = savedLocations.map { $0.location.coordinate.coordinate }
+            await viewModel.fetchSavedLocationsWeather(for: locations, modelContext: modelContext)
+        }
+    }
+
+    private func handleLocationUpdate(_ status: CLAuthorizationStatus?) {
+        Task {
+            await viewModel.fetchCurrentWeather(for: locationService.lastLocation,
+                                                locationStatus: status,
+                                                modelContext: modelContext)
+        }
     }
 
     private func deleteFave(_ weatherLocation: TodayWeatherUIModel) {
@@ -130,5 +129,4 @@ struct WeatherListView: View {
     WeatherListView()
         .environmentObject(WeatherViewModel(dataSource: RemoteDataSource(client: WeatherClient())))
         .modelContainer(for: TodayWeatherUIModel.self, inMemory: true)
-
 }

@@ -48,7 +48,7 @@ enum LogMessages: String {
 enum ErrorMessages: String {
     case locationAccessDenied = "Location access is denied. Please enable it in Settings."
     case decodingTrace = "Decoding response:"
-    case errorEncountered = "Error encountered"
+    case errorEncountered = "Error encountered: %@"
     case fetchLocationError = "Failed to fetch current location."
     case decodingError = "Decoding error:: %@"
     case tryAgain = "Reload..."

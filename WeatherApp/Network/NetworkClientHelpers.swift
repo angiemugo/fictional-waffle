@@ -27,7 +27,7 @@ enum WeatherClientError: Error, Identifiable {
                 .locationError(let message):
             return message
         case .decodingError(let error):
-            return "Decoding error: \(error.localizedDescription)"
+            return String(format: ErrorMessages.decodingError.rawValue, error.localizedDescription)
         }
     }
 }
