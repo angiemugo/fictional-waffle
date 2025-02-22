@@ -10,46 +10,30 @@ import CoreLocation
 
 class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
-    private var continuation: CheckedContinuation<CLLocation, Error>?
+    @Published var locationStatus: CLAuthorizationStatus?
+    @Published var lastLocation: CLLocation?
+    @Published var error: Error?
 
     static let shared = LocationService()
 
     override init() {
         super.init()
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
-        checkAuthorization()
-    }
-
-    var currentLocation: CLLocation {
-        get async throws {
-            return try await withCheckedThrowingContinuation { continuation in
-                self.continuation = continuation
-                locationManager.requestLocation()
-            }
-        }
-    }
-
-    func checkAuthorization() {
-        switch locationManager.authorizationStatus {
-        case .notDetermined:
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.requestWhenInUseAuthorization()
-        default:
-            return
-        }
+        locationManager.startUpdatingLocation()
+    }
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        locationStatus = manager.authorizationStatus
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        DebugEnvironment.log.debug(LogMessages.didUpdateLocations.rawValue)
         guard let location = locations.last else { return }
-        continuation?.resume(returning: location)
-        continuation = nil
+        lastLocation = location
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        DebugEnvironment.log.debug("\(LogMessages.updatingLocationsFailed.rawValue)\(error)")
-        continuation?.resume(throwing: WeatherClientError.locationError(message:
-                                                                            ErrorMessages.locationAccessDenied.rawValue))
-        continuation = nil
+        self.error = error
     }
 }

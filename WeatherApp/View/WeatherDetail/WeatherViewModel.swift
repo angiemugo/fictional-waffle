@@ -13,7 +13,7 @@ import SwiftData
 class WeatherViewModel: ObservableObject {
     @Published var showAlert: Bool = false
     let dataSource: RemoteDataSource
-    let locationService = LocationService.shared
+//    let locationService = LocationService.shared
     var searchText: String = ""
     var errorText: String? {
         didSet {
@@ -26,13 +26,13 @@ class WeatherViewModel: ObservableObject {
         self.dataSource = dataSource
     }
 
-    public func getCurrentLocation() async {
-        do {
-            currentLocation = try await locationService.currentLocation
-        } catch {
-            print("This is the error: \(error)")
-        }
-    }
+//    public func getCurrentLocation() async {
+//        do {
+//            currentLocation = try await locationService.currentLocation
+//        } catch {
+//            print("This is the error: \(error)")
+//        }
+//    }
     public func fetchCurrentWeather(location: CLLocation,
         modelContext: ModelContext) async {
         do {

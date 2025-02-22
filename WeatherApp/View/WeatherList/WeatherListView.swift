@@ -15,6 +15,7 @@ struct WeatherListView: View {
     @Query var savedLocationsQuery: [TodayWeatherUIModel]
     @State private var showMap = false
     @State private var savedLocations: [TodayWeatherUIModel] = []
+    @StateObject var locationService = LocationService.shared
 
     var body: some View {
         List {
@@ -67,15 +68,21 @@ struct WeatherListView: View {
             )
         }
         .task {
-            await viewModel.getCurrentLocation()
-            guard let currentLocation = viewModel.currentLocation else { return }
-            await viewModel.fetchCurrentWeather(location: currentLocation,
-                modelContext: modelContext)
             refresh()
         }
         .refreshable {
             refresh()
+        }.onReceive(locationService.$locationStatus) { status in
+            print(status)
         }
+//        onReceive(locationService.$locationStatus) { status in
+//            if status == .denied {
+//                print("location denied")
+//                return
+//            }
+//            await viewModel.fetchCurrentWeather(location: locationService.lastLocation!,
+//                modelContext: modelContext)
+//        }
     }
 
     func refresh() {

@@ -67,8 +67,8 @@ struct FavoriteMapView: View {
     }
 
     private func fetchCurrentLocation() async {
-        guard let location = viewModel.currentLocation else { return }
-        currentLocation = location.coordinate
+//        guard let location = viewModel.currentLocation else { return }
+//        currentLocation = location.coordinate
     }
 
     func saveModel(_ location: CLLocationCoordinate2D) {
