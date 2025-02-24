@@ -73,12 +73,3 @@ struct SnackbarModifier: ViewModifier {
         }
     }
 }
-
-
-#Preview {
-    SnackbarView(show: .constant(true),
-                 bgColor: Color.blue,
-                 txtColor: Color.white,
-                 iconColor: Color.white,
-                 message: "Success")
-}

@@ -17,7 +17,7 @@ struct WeatherListView: View {
     @State private var showMap = false
     @State private var firstLaunch = true
     @State private var savedLocations: [TodayWeatherUIModel] = []
-    @StateObject private var locationService = LocationService.shared
+    @ObservedObject private var locationService = LocationService.shared
 
     var body: some View {
         List {
@@ -37,7 +37,6 @@ struct WeatherListView: View {
         )
         .task { refresh() }
         .refreshable { refresh() }
-        .onAppear()
         .onReceive(
             locationService.$locationStatus
                 .combineLatest(locationService.$lastLocation)
@@ -170,11 +169,4 @@ struct WeatherListView: View {
     private func deleteFave(weatherLocation: TodayWeatherUIModel) {
         viewModel.deleteLocation(for: weatherLocation, modelContext: modelContext)
     }
-}
-
-
-#Preview {
-    WeatherListView()
-        .environmentObject(WeatherViewModel(dataSource: RemoteDataSource(client: WeatherClient())))
-        .modelContainer(for: TodayWeatherUIModel.self, inMemory: true)
 }

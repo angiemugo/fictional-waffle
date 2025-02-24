@@ -34,17 +34,3 @@ struct FavouriteView: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
-
-#Preview {
-    let day = TodayWeatherUIModel(id: 1740365084,
-                                  desc: "cloud",
-                                  min: 10,
-                                  current: 20,
-                                  max: 30,
-                                  latitude: 5,
-                                  longitude: 10,
-                                  isCurrentLocation: true,
-                                  locationName: "Nairobi")
-    FavouriteView(currentWeather: day)
-}
-
