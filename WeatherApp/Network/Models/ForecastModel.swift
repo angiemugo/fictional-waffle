@@ -9,10 +9,15 @@ import SwiftUI
 
 struct ForecastResponse: Decodable {
     var list: [Forecast]
+    var city: City
 }
 
 struct Forecast: Decodable {
     let dtTxt: Date
     let main: Main
     let weather: [Weather]
+}
+
+struct City: Decodable {
+    var coord: Coordinates
 }

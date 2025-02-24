@@ -9,13 +9,39 @@ import Foundation
 import CoreLocation
 import SwiftData
 
+enum Status {
+    case Loading
+    case Loaded(String)
+    case Error(String)
+    case idle
+}
+
 @MainActor
 class WeatherViewModel: ObservableObject {
-    @Published var showAlert: Bool = false
     let dataSource: RemoteDataSource
-    var searchText: String = ""
-    var errorText: String? {
-        didSet { showAlert = errorText != nil }
+    @Published var showAlert: Bool = false
+    @Published var status: Status = .idle {
+        didSet {
+            if case .Loading = status {
+                showAlert = false
+            } else {
+                showAlert = true
+            }
+        }
+    }
+
+    var statusText: String? {
+        switch status {
+        case .Loaded(let message), .Error(let message):
+            return message
+        default:
+            return nil
+        }
+    }
+
+    var isError: Bool {
+        if case .Error = status { return true }
+        return false
     }
 
     init(dataSource: RemoteDataSource) {
@@ -24,18 +50,18 @@ class WeatherViewModel: ObservableObject {
 
     // MARK: - Public Methods
 
-    func fetchCurrentWeather(for location: CLLocation?,
+    func fetchCurrentWeather(for location: CLLocation,
                              locationStatus: CLAuthorizationStatus?,
                              modelContext: ModelContext) async {
         guard locationStatus != .denied else {
             handleError(WeatherClientError.locationError(message: ErrorMessages.locationAccessDenied.rawValue))
             return
         }
-        guard let location = location else { return }
 
         do {
             let weatherModel = try await fetchTodayWeather(location: location.coordinate, modelContext: modelContext, isCurrent: true)
             insertModels([weatherModel], modelContext: modelContext)
+            status = .Loaded(AppStrings.weatherFetched.rawValue)
         } catch {
             handleError(error)
         }
@@ -47,6 +73,7 @@ class WeatherViewModel: ObservableObject {
                 try await self.fetchTodayWeather(location: $0, modelContext: modelContext, isCurrent: false)
             }
             insertModels(weatherModels, modelContext: modelContext)
+            status = .Loaded(AppStrings.savedSuccess.rawValue)
         } catch {
             handleError(error)
         }
@@ -54,9 +81,10 @@ class WeatherViewModel: ObservableObject {
 
     func fetchWeatherForecast(location: CLLocationCoordinate2D, modelContext: ModelContext) async {
         do {
-            let forecast = try await dataSource.getWeatherForecast(location: location)
-            let UIModels = forecast.list.map(ForecastUIModel.init)
-            insertModels(UIModels, modelContext: modelContext)
+            let forecastResponse = try await dataSource.getWeatherForecast(location: location)
+            let uiModels = forecastResponse.list.map { ForecastUIModel(from: $0, city: forecastResponse.city) }
+            insertModels(uiModels, modelContext: modelContext)
+            status = .Loaded(AppStrings.forecastSuccess.rawValue)
         } catch {
             handleError(error)
         }
@@ -109,9 +137,9 @@ class WeatherViewModel: ObservableObject {
 
     private func handleError(_ error: Error) {
         if let weatherError = error as? WeatherClientError {
-            errorText = weatherError.errorMessage
+            status = .Error(weatherError.errorMessage)
         } else {
-            errorText = String(format: ErrorMessages.errorEncountered.rawValue, error.localizedDescription)
+            status = .Error(String(format: ErrorMessages.errorEncountered.rawValue, error.localizedDescription))
         }
     }
 }

@@ -10,22 +10,25 @@ import CoreLocation
 import SwiftData
 
 @Model class TodayWeatherUIModel {
-    @Attribute(.unique) var locationName: String
+    @Attribute(.unique) var id: Double
     var desc: String
     var min: Double
     var current: Double
     var max: Double
     var location: Location
     var isCurrentLocation: Bool = false
+    var locationName: String
 
-    init(locationName: String,
+    init(id: Double,
          desc: String,
          min: Double,
          current: Double,
          max: Double,
          latitude: Double,
          longitude: Double,
-         isCurrentLocation: Bool) {
+         isCurrentLocation: Bool,
+         locationName: String) {
+        self.id = id
         self.desc = desc
         self.min = min
         self.current = current
@@ -42,14 +45,16 @@ import SwiftData
         let locationName = fetchedWeather.sys.country.map
         { "\(fetchedWeather.name), \($0)" } ?? fetchedWeather.name
 
-        self.init(locationName: locationName,
+        self.init(id: fetchedWeather.id,
                   desc: fetchedWeather.weather.first?.main ?? "",
                   min: fetchedWeather.main.tempMin,
                   current: fetchedWeather.main.temp,
                   max: fetchedWeather.main.tempMax,
                   latitude: fetchedWeather.coord.lat,
                   longitude: fetchedWeather.coord.lon,
-                  isCurrentLocation: isCurrentLocation)
+                  isCurrentLocation: isCurrentLocation,
+                  locationName: locationName
+        )
     }
 }
 

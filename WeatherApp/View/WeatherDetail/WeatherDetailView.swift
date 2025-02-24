@@ -4,6 +4,7 @@
 //
 //  Created by Angie Mugo on 29/01/2024.
 //
+
 import SwiftUI
 import SwiftData
 import CoreLocation
@@ -21,6 +22,7 @@ struct WeatherDetailView: View {
                     .resizable()
                     .frame(maxWidth: .infinity)
                     .edgesIgnoringSafeArea(.all)
+
                 VStack {
                     Text("\(currentWeather.min, specifier: "%.1f")°C")
                         .font(.largeTitle)
@@ -29,33 +31,38 @@ struct WeatherDetailView: View {
                         .font(.largeTitle)
                         .foregroundColor(.white)
                     Spacer()
-                }.padding(.top, 50)
+                }
+                .padding(.top, 50)
             }
+
             HStack {
                 VStack {
                     Text("\(currentWeather.min, specifier: "%.1f")°C")
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     Text(AppStrings.min.rawValue)
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
                 VStack {
                     Text("\(currentWeather.current, specifier: "%.1f")°C")
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
+                        .frame(maxWidth: .infinity, alignment: .center)
                     Text(AppStrings.current.rawValue)
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
 
                 VStack {
                     Text("\(currentWeather.max, specifier: "%.1f")°C")
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
                     Text(AppStrings.max.rawValue)
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-            }.padding(.horizontal)
+            }
+            .padding(.horizontal)
+
             Divider()
                 .frame(height: 1)
                 .background(Color.white)
+
             ForEach(groupModel().sorted(by: {
                 guard let firstValue1 = $0.value.first, let firstValue2 = $1.value.first else {
                     return false
@@ -74,37 +81,36 @@ struct WeatherDetailView: View {
                     .padding(.horizontal)
                 }
             }
+
             Spacer()
-        }.task {
+        }
+        .task {
             let location = CLLocationCoordinate2D(latitude: currentWeather.location.latitude,
                                                   longitude: currentWeather.location.longitude)
-            await viewModel.fetchWeatherForecast(location: location,
-                                                 modelContext: modelContext)
+            await viewModel.fetchWeatherForecast(location: location, modelContext: modelContext)
         }
-        .background(WeatherColor.create(rawValue: currentWeather.desc)
-            .color)
+        .background(WeatherColor.create(rawValue: currentWeather.desc).color)
         .navigationTitle(currentWeather.location.name)
     }
 
     private func groupModel() -> [String: [ForecastUIModel]] {
-        let grouped = Dictionary(grouping: weatherForecast,
-                                 by: { $0.dayOfWeek })
-        return grouped
+        Dictionary(grouping: weatherForecast, by: { $0.dayOfWeek })
     }
 }
 
 #Preview {
-    let day = TodayWeatherUIModel(locationName: "Nairobi",
+    let day = TodayWeatherUIModel(id: 1740365084,
                                   desc: "cloud",
                                   min: 10,
                                   current: 20,
                                   max: 30,
                                   latitude: 5,
                                   longitude: 10,
-                                  isCurrentLocation: true)
+                                  isCurrentLocation: true,
+                                  locationName: "Nairobi")
     WeatherDetailView(currentWeather: day)
         .environmentObject(WeatherViewModel(dataSource:
-                                                    RemoteDataSource(client: WeatherClient())))
+                                                RemoteDataSource(client: WeatherClient())))
         .modelContainer(for: ForecastUIModel.self,
                         inMemory: true)
 }

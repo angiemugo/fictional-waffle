@@ -14,21 +14,21 @@ struct FavoriteMapView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var errorString: String = ""
     @State private var currentLocation: CLLocationCoordinate2D?
-    @State private var region: MKCoordinateRegion
     @Binding var savedLocations: [TodayWeatherUIModel]
     @Binding var presented: Bool
+    @StateObject var locationService = LocationService.shared
 
     init(savedLocations: Binding<[TodayWeatherUIModel]>, presented: Binding<Bool>) {
         _savedLocations = savedLocations
         _presented = presented
-
-        _region = State(initialValue: MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: -1.286389, longitude: 36.817223),
-            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-        ))
     }
 
     var body: some View {
+      let region = MKCoordinateRegion(
+            center: locationService.lastLocation?.coordinate ?? CLLocationCoordinate2D(),
+            span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
+        )
+
         NavigationView {
             MapReader { proxy in
                 Map(initialPosition: .region(region)) {
@@ -61,14 +61,6 @@ struct FavoriteMapView: View {
                 }
             }
         }
-        .task {
-            await fetchCurrentLocation()
-        }
-    }
-
-    private func fetchCurrentLocation() async {
-//        guard let location = viewModel.currentLocation else { return }
-//        currentLocation = location.coordinate
     }
 
     func saveModel(_ location: CLLocationCoordinate2D) {
@@ -77,14 +69,15 @@ struct FavoriteMapView: View {
 }
 
 #Preview {
-    let day = TodayWeatherUIModel(locationName: "Nairobi",
+    let day = TodayWeatherUIModel(id: 1740365084,
                                   desc: "cloud",
                                   min: 10,
                                   current: 20,
                                   max: 30,
                                   latitude: 5,
                                   longitude: 10,
-                                  isCurrentLocation: true)
+                                  isCurrentLocation: true,
+                                  locationName: "Nairobi")
     FavoriteMapView(savedLocations: .constant([day]),
                     presented: .constant(true))
     .environmentObject(WeatherViewModel(dataSource: RemoteDataSource(client: WeatherClient())))

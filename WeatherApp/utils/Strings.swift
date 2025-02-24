@@ -27,6 +27,9 @@ enum AppStrings: String {
     case maxTemperature = "Max: %.1f°C"
     case min = "Min"
     case max = "Max"
+    case weatherFetched = "Current weather fetched successfully!"
+    case savedSuccess = "Saved locations weather fetched successfully!"
+    case forecastSuccess = "Weather forecast fetched successfully!"
 }
 
 enum LogMessages: String {

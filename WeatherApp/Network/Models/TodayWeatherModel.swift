@@ -13,13 +13,14 @@ struct TodayWeatherModel: Decodable {
     let weather: [Weather]
     let sys: SysInfo
     let coord: Coordinates
+    let id: Double
 }
 
 struct SysInfo: Decodable {
     let country: String?
 }
 
-struct Coordinates: Decodable {
+struct Coordinates: Decodable, Equatable {
     let lat: Double
     let lon: Double
 }
