@@ -4,95 +4,113 @@
 //
 //  Created by Angie Mugo on 29/01/2024.
 //
+
 import SwiftUI
 import SwiftData
+import CoreLocation
 
 struct WeatherDetailView: View {
-    @StateObject var detailVM: WeatherDetailViewModel
-    @Environment(\.modelContext) var modelContext
-    let todayModel: TodayWeatherUIModel
-    let isFave: Bool
+    @Environment(\.modelContext) private var modelContext
+    @Query var weatherForecast: [ForecastUIModel]
+    @EnvironmentObject private var viewModel: WeatherViewModel
+    var currentWeather: TodayWeatherUIModel
 
     var body: some View {
-        switch detailVM.state {
-        case .idle:
-            Color.clear.onAppear {
-                Task {
-                    await detailVM.onAppearAction(todayModel.lat, todayModel.lon)
-                }
-            }
-        case .loading:
-            ProgressView()
-        case .failed(let error):
-            Text(error.localizedDescription)
-        case .loaded(let forecastData):
-            VStack {
-                Image(BackgroundImage.create(rawValue: todayModel.desc).background)
+        VStack {
+            ZStack {
+                Image(BackgroundImage.create(rawValue: currentWeather.desc).background)
                     .resizable()
                     .frame(maxWidth: .infinity)
                     .edgesIgnoringSafeArea(.all)
-                HStack {
-                    VStack {
-                        Text(todayModel.min)
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
-                        Text("Min")
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
-                    }
 
-                    VStack {
-                        Text(todayModel.current)
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
+                VStack {
+                    Text("\(currentWeather.min, specifier: "%.1f")°C")
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                    Text(currentWeather.desc)
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                    Spacer()
+                }
+                .padding(.top, 50)
+            }
 
-                        Text("Current")
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .center)
-                    }
+            HStack {
+                VStack {
+                    Text("\(currentWeather.min, specifier: "%.1f")°C")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(AppStrings.min.rawValue)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
 
-                    VStack {
-                        Text(todayModel.max)
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
-                        Text("Max")
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
-                    }
-                }.padding(.horizontal)
-                Divider()
-                    .frame(height: 1)
-                    .background(Color.white)
-                ForEach(forecastData.sorted(by: { $0.value.first!.dtTxt < $1.value.first!.dtTxt }), id: \.key) { model in
+                VStack {
+                    Text("\(currentWeather.current, specifier: "%.1f")°C")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    Text(AppStrings.current.rawValue)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+
+                VStack {
+                    Text("\(currentWeather.max, specifier: "%.1f")°C")
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    Text(AppStrings.max.rawValue)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+            }
+            .padding(.horizontal)
+
+            Divider()
+                .frame(height: 1)
+                .background(Color.white)
+
+            ForEach(groupModel().sorted(by: {
+                guard let firstValue1 = $0.value.first, let firstValue2 = $1.value.first else {
+                    return false
+                }
+                return firstValue1.dtTxt < firstValue2.dtTxt
+            }), id: \.key) { model in
+                if let first = model.value.first {
                     HStack {
                         Text(model.key)
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
-                        model.value.first?.weather
-                        Text(model.value.first?.temp ?? "")
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .trailing)
-                    }.padding(.vertical, 5)
-                        .padding(.horizontal)
-                }
-                Spacer()
-            }
-            .background(WeatherColor.create(rawValue: todayModel.desc).color)
-            .navigationTitle(todayModel.locationName)
-            .toolbar {
-                Button {
-                    toggleFavorite()
-                } label: {
-                    Image(systemName: isFave ? "bookmark.fill" : "bookmark")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        WeatherIcons.create(rawValue: first.weather).icon
+                        Text("\(first.temp, specifier: "%.1f")°C")
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    .padding(.vertical, 5)
+                    .padding(.horizontal)
                 }
             }
+
+            Spacer()
         }
+        .task {
+            let location = CLLocationCoordinate2D(latitude: currentWeather.location.latitude,
+                                                  longitude: currentWeather.location.longitude)
+            await viewModel.fetchWeatherForecast(location: location, modelContext: modelContext)
+        }
+        .background(WeatherColor.create(rawValue: currentWeather.desc).color)
+        .navigationTitle(currentWeather.location.name)
     }
 
-    func toggleFavorite() {
-        if isFave {
-            modelContext.delete(todayModel)
-        } else {
-            modelContext.insert(todayModel)
-        }
+    private func groupModel() -> [String: [ForecastUIModel]] {
+        Dictionary(grouping: weatherForecast, by: { $0.dayOfWeek })
     }
 }
 
 #Preview {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: TodayWeatherUIModel.self, configurations: config)
-
-    return WeatherDetailView(detailVM: WeatherDetailViewModel(dataSource: RemoteDataSource(WeatherClient())), todayModel: PreviewData.shared.getFavoriteUIModel(), isFave: false).modelContainer(container)
+    let day = TodayWeatherUIModel(id: 1740365084,
+                                  desc: "cloud",
+                                  min: 10,
+                                  current: 20,
+                                  max: 30,
+                                  latitude: 5,
+                                  longitude: 10,
+                                  isCurrentLocation: true,
+                                  locationName: "Nairobi")
+    WeatherDetailView(currentWeather: day)
+        .environmentObject(WeatherViewModel(dataSource:
+                                                RemoteDataSource(client: WeatherClient())))
+        .modelContainer(for: ForecastUIModel.self,
+                        inMemory: true)
 }

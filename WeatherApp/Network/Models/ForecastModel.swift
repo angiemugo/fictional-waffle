@@ -9,18 +9,15 @@ import SwiftUI
 
 struct ForecastResponse: Decodable {
     var list: [Forecast]
+    var city: City
 }
 
 struct Forecast: Decodable {
     let dtTxt: Date
     let main: Main
     let weather: [Weather]
+}
 
-    func toUIModel() -> ForecastUIModel {
-        return ForecastUIModel(dayOfWeek: dtTxt.getDay(),
-                               weather:
-                                WeatherIcons(rawValue: weather.first?.main ?? "")?.icon ?? Image(systemName: "cloud"),
-                               temp: main.temp.toString(),
-                               dtTxt: dtTxt)
-    }
+struct City: Decodable {
+    var coord: Coordinates
 }

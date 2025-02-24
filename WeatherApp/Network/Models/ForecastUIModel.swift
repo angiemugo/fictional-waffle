@@ -1,5 +1,5 @@
 //
-//  WeatherForecastUIModel.swift
+//  ForecastUIModel.swift
 //  WeatherApp
 //
 //  Created by Angie Mugo on 30/01/2024.
@@ -8,18 +8,39 @@
 import SwiftUI
 import SwiftData
 
-struct ForecastUIModel {
-    let dayOfWeek: String
-    let weather: Image
-    let temp: String
-    let dtTxt: Date
+@Model class ForecastUIModel {
+    @Attribute(.unique) var id = UUID().uuidString
+    var dayOfWeek: String
+    var weather: String
+    var temp: Double
+    var dtTxt: Date
+    var latitude: Double
+    var longitude: Double
+
+    init(weather: String, dayOfWeek: String, temp: Double, dtTxt: Date, location: Coordinates) {
+        self.dayOfWeek = dayOfWeek
+        self.weather = weather
+        self.temp = temp
+        self.dtTxt = dtTxt
+        self.latitude = location.lat
+        self.longitude = location.lon
+    }
+    
+    convenience init(from fetched: Forecast, city: City) {
+        self.init(weather: fetched.weather.first?.main ?? "",
+                  dayOfWeek: fetched.dtTxt.getDay(),
+                  temp: fetched.main.temp,
+                  dtTxt: fetched.dtTxt,
+                  location: city.coord
+        )
+    }
 }
 
 enum WeatherIcons: String {
     case clear
     case rain
     case none
-
+    
     static func create(rawValue: String) -> Self {
         if let icon = WeatherIcons(rawValue: rawValue) {
             return icon
@@ -27,7 +48,7 @@ enum WeatherIcons: String {
             return .none
         }
     }
-
+    
     var icon: Image {
         switch self {
         case .clear:
@@ -45,7 +66,7 @@ enum WeatherColor: String {
     case sunny
     case rainy = "rain"
     case none
-
+    
     static func create(rawValue: String) -> Self {
         if let color = WeatherColor(rawValue: rawValue) {
             return color
@@ -53,7 +74,7 @@ enum WeatherColor: String {
             return .none
         }
     }
-
+    
     var color: Color {
         switch self {
         case .cloudy:
@@ -64,8 +85,8 @@ enum WeatherColor: String {
             return Color(hex: "57575D")
         case .none:
             return Color(hex: "47AB2F")
-
+            
         }
-
+        
     }
 }

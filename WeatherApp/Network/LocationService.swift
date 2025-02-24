@@ -1,5 +1,5 @@
 //
-//  LocationManager.swift
+//  LocationService.swift
 //  WeatherApp
 //
 //  Created by Angie Mugo on 30/01/2024.
@@ -8,13 +8,13 @@
 import Foundation
 import CoreLocation
 
-class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     @Published var locationStatus: CLAuthorizationStatus?
     @Published var lastLocation: CLLocation?
     @Published var error: Error?
 
-    static let shared = LocationManager()
+    static let shared = LocationService()
 
     override init() {
         super.init()
@@ -22,21 +22,6 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
-    }
-
-    var statusString: String {
-        guard let status = locationStatus else {
-            return "unknown"
-        }
-
-        switch status {
-        case .notDetermined: return "notDetermined"
-        case .authorizedWhenInUse: return "authorizedWhenInUse"
-        case .authorizedAlways: return "authorizedAlways"
-        case .restricted: return "restricted"
-        case .denied: return "denied"
-        default: return "unknown"
-        }
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -52,4 +37,3 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.error = error
     }
 }
-

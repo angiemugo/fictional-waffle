@@ -13,30 +13,14 @@ struct TodayWeatherModel: Decodable {
     let weather: [Weather]
     let sys: SysInfo
     let coord: Coordinates
-
-    func toUIModel() -> TodayWeatherUIModel {
-        var location = ""
-              if let country = sys.country {
-                  location = "\(name), \(country)"
-              } else {
-                  location = name
-              }
-
-        return TodayWeatherUIModel(locationName: location,
-                                   desc: weather.first?.main ?? "",
-                                   min: main.tempMin.toString(),
-                                   current: main.temp.toString(),
-                                   max: main.tempMax.toString(),
-                                   lat: coord.lat,
-                                   lon: coord.lon)
-    }
+    let id: Double
 }
 
 struct SysInfo: Decodable {
     let country: String?
 }
 
-struct Coordinates: Decodable {
+struct Coordinates: Decodable, Equatable {
     let lat: Double
     let lon: Double
 }
