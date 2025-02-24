@@ -2,15 +2,16 @@
 Weather app is a small app that uses the [open weather api](https://openweathermap.org/api) to fetch current weather data and forecast weather data. 
 
 ## Sample Screenshots 
-<img src="https://github.com/angiemugo/fictional-waffle/assets/23118371/dd7a752a-7703-49f4-a6c4-4bccace8b05a" width="200" height="400" alt="Pokemons List">
-<img src="https://github.com/angiemugo/fictional-waffle/assets/23118371/6601e6f8-6c3d-4312-8073-44dda34ca0df" width="200" height="400" alt="Pokemons List">
-<img src="https://github.com/angiemugo/fictional-waffle/assets/23118371/cd8bfed2-dcfc-4225-a018-08bf5750720f" width="200" height="400" alt="Pokemons List">
-<img src="https://github.com/angiemugo/fictional-waffle/assets/23118371/98570c36-e530-4c91-bfc8-8aeb33db3b98" width="200" height="400" alt="Pokemons List">
+
+![IMG_0969](https://github.com/user-attachments/assets/606dab37-1ff6-4a2f-81a3-18e7ebff41b1)
+![IMG_0968](https://github.com/user-attachments/assets/4bfd20b6-9f72-42a6-af12-b5e66a2f87cf)
+![IMG_0967](https://github.com/user-attachments/assets/b8bcd863-8fc9-4d62-87d5-e4fbcbc99087)
+![IMG_0966](https://github.com/user-attachments/assets/2011244a-21b4-415d-b7f0-0f2b629363c3)
 
 ## Prerequisites
 These are the tools we need to run the project 
-- Xcode 15.2 or newer 
-- iOS 17.2  or newer
+- Xcode 16.2 or newer 
+- iOS 18.0  or newer
 
 ## Installation
 `$ git clone https://github.com/angiemugo/fictional-waffle.git`
@@ -26,6 +27,7 @@ These are the tools we need to run the project
 WeatherApp/
 │
 ├─ WeatherApp/
+|   |-- Utils/
 │   ├── View/
 │   ├── Network/
 │   ├── Extensions/
@@ -33,13 +35,12 @@ WeatherApp/
 ├─ WeatherAppTests/
 
 ## Technologies Used
- **Programming Language:** Swift 6
+ **Programming Language:** Swift 
  **Development Environment:** Xcode 15.2
  **Version Control:** Git
  **UI Framework:** SwiftUI
  **Database:** Swift Data 
  **Networking:** URLSession 
- **Testing Framework:** XCTest
 
 ## Technology
 ### Architecture 
