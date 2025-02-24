@@ -56,6 +56,9 @@ I used a flavor of MVVM. Since SwiftUI already implements a lot of reactivity (w
 ### Concurrency  
 I used `async/await` instead of completion handlers. `async/await` handles errors elegantly. I used `@MainActor` for the view models since it runs on the main loop (which is typically used to update the view).  
 
+### API Key 
+I saved the API key in secrets.plist which I have pushed with this project. In a real-world project, I would not push this since it's sensitive information. 
+
 ## App Features  
 - Show a list of all saved locations and the weather at the current location.  
 - Tap on a location to view the current weather and forecast for that location.  
