@@ -4,10 +4,10 @@ Weather app is a small app that uses the [OpenWeather API](https://openweatherma
 ## Sample Screenshots  
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/606dab37-1ff6-4a2f-81a3-18e7ebff41b1" width="250">
-  <img src="https://github.com/user-attachments/assets/4bfd20b6-9f72-42a6-af12-b5e66a2f87cf" width="250">
-  <img src="https://github.com/user-attachments/assets/b8bcd863-8fc9-4d62-87d5-e4fbcbc99087" width="250">
-  <img src="https://github.com/user-attachments/assets/2011244a-21b4-415d-b7f0-0f2b629363c3" width="250">
+  <img src="https://github.com/user-attachments/assets/606dab37-1ff6-4a2f-81a3-18e7ebff41b1" width="200">
+  <img src="https://github.com/user-attachments/assets/4bfd20b6-9f72-42a6-af12-b5e66a2f87cf" width="200">
+  <img src="https://github.com/user-attachments/assets/b8bcd863-8fc9-4d62-87d5-e4fbcbc99087" width="200">
+  <img src="https://github.com/user-attachments/assets/2011244a-21b4-415d-b7f0-0f2b629363c3" width="200">
 </p>  
 
 ## Prerequisites  
