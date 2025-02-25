@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 enum WeatherClientError: Error, Identifiable {
     var id: String {
         return UUID().uuidString

@@ -12,18 +12,16 @@ import SwiftData
 struct WeatherListView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var viewModel: WeatherViewModel
-    @Query var savedLocationsQuery: [TodayWeatherUIModel]
+    @Query private var savedLocationsQuery: [TodayWeatherUIModel]
 
     @State private var showMap = false
     @State private var firstLaunch = true
-    @State private var savedLocations: [TodayWeatherUIModel] = []
-    @StateObject private var locationService = LocationService.shared
+    @State private var hasFetchedOnce = false
+    @ObservedObject private var locationService = LocationService.shared
 
     var body: some View {
         List {
-            if case .Loading = viewModel.status {
-                loadingView
-            }
+            if case .Loading = viewModel.status { loadingView }
             myLocationSection
             savedLocationsSection
         }
@@ -35,26 +33,9 @@ struct WeatherListView: View {
             bgColor: viewModel.isError ? .red : .green,
             message: viewModel.statusText ?? ""
         )
-        .task { refresh() }
+        .task { fetchWeatherOnce() }
         .refreshable { refresh() }
-        .onAppear()
-        .onReceive(
-            locationService.$locationStatus
-                .combineLatest(locationService.$lastLocation)
-        ) { status, location in
-            guard let location = location, firstLaunch else {
-                return
-            }
-            firstLaunch = false
-
-            Task {
-                await viewModel.fetchCurrentWeather(
-                    for: location,
-                    locationStatus: status,
-                    modelContext: modelContext
-                )
-            }
-        }
+        .onReceive(locationService.$locationStatus.combineLatest(locationService.$lastLocation)) { handleLocationChange($0, $1) }
     }
 
     // MARK: - UI Components
@@ -72,47 +53,40 @@ struct WeatherListView: View {
 
     private var myLocationSection: some View {
         Section(AppStrings.myLocation.rawValue) {
-            if let currentLocation = savedLocationsQuery.first {
+            if let currentLocation = savedLocationsQuery.first(where: { $0.isCurrentLocation }) {
                 locationRow(currentLocation)
             } else {
-                Text(AppStrings.fetchingLocation.rawValue)
+                Text(locationService.locationStatus == .denied ?
+                     ErrorMessages.locationAccessDenied.rawValue
+                     : AppStrings.fetchingLocation.rawValue)
                     .foregroundStyle(.secondary)
             }
         }
     }
 
     private var savedLocationsSection: some View {
-        Section(AppStrings.savedLocations.rawValue) {
-            if savedLocationsQuery.count <= 1 {
-                ContentUnavailableView(
-                    AppStrings.noSavedLocations.rawValue,
-                    systemImage: AppStrings.trayIcon.rawValue
-                )
+        let filteredLocations = savedLocationsQuery.filter { !$0.isCurrentLocation }
+
+        return Section(AppStrings.savedLocations.rawValue) {
+            if filteredLocations.isEmpty {
+                ContentUnavailableView(AppStrings.noSavedLocations.rawValue,
+                                       systemImage: AppStrings.trayIcon.rawValue)
             } else {
-                savedLocationsView
+                ForEach(filteredLocations) { locationRow($0) }
             }
         }
     }
 
     private var addButton: some View {
-        Button { showMap.toggle() } label: {
+        Button(action: { showMap.toggle() }) {
             Image(systemName: AppStrings.plusIcon.rawValue)
         }
     }
 
     private var mapSheet: some View {
-        FavoriteMapView(
-            savedLocations: .constant(savedLocationsQuery),
-            presented: $showMap
-        )
-        .environmentObject(viewModel)
-    }
-
-    @ViewBuilder
-    private var savedLocationsView: some View {
-        ForEach(savedLocationsQuery.dropFirst()) { location in
-            locationRow(location)
-        }
+        FavoriteMapView(savedLocations: .constant(savedLocationsQuery),
+                        presented: $showMap)
+            .environmentObject(viewModel)
     }
 
     @ViewBuilder
@@ -123,58 +97,54 @@ struct WeatherListView: View {
         let forecast = Query(filter: #Predicate<ForecastUIModel> {
             $0.latitude == latitude && $0.longitude == longitude
         })
-
-        NavigationLink {
-            WeatherDetailView(
-                _weatherForecast: forecast,
-                currentWeather: weather
-            )
-            .environmentObject(viewModel)
-        } label: {
+        NavigationLink(destination: WeatherDetailView(_weatherForecast: forecast,
+                                                      currentWeather: weather)
+            .environmentObject(viewModel)) {
             FavouriteView(currentWeather: weather)
         }
-        .swipeActions(edge: .trailing) {
-            deleteButton(for: weather)
-        }
+        .swipeActions(edge: .trailing) { deleteButton(for: weather) }
     }
 
     private func deleteButton(for weather: TodayWeatherUIModel) -> some View {
-        Button(role: .destructive) {
-            deleteFave(weatherLocation: weather)
-        } label: {
-            Label(AppStrings.delete.rawValue, systemImage: AppStrings.trashIcon.rawValue)
+        Button(role: .destructive, action: { deleteFave(weather) }) {
+            Label(AppStrings.delete.rawValue,
+                  systemImage: AppStrings.trashIcon.rawValue)
         }
         .tint(.red)
     }
 
     // MARK: - Actions
 
+    private func fetchWeatherOnce() {
+        guard !hasFetchedOnce else { return }
+        hasFetchedOnce = true
+        refresh()
+    }
+
     private func refresh() {
         Task {
-            guard savedLocations.count > 0 else { return }
-            let locations = savedLocations.map { $0.location.coordinate.coordinate }
-            await viewModel.fetchSavedLocationsWeather(for: locations, modelContext: modelContext)
+            guard !savedLocationsQuery.isEmpty else { return }
+            await viewModel.fetchSavedLocationsWeather(for: savedLocationsQuery
+                .map { $0.location.coordinate.coordinate },
+                                                       modelContext: modelContext)
         }
+    }
+
+    private func handleLocationChange(_ status: CLAuthorizationStatus?, _ location: CLLocation?) {
+        guard let location = location, let status = status, firstLaunch else { return }
+        firstLaunch = false
+        handleLocationUpdate(for: status,
+                             location: location)
     }
 
     private func handleLocationUpdate(for status: CLAuthorizationStatus, location: CLLocation) {
-        Task {
-            await viewModel.fetchCurrentWeather(
-                for: location,
-                locationStatus: status,
-                modelContext: modelContext
-            )
-        }
+        Task { await viewModel.fetchCurrentWeather(for: location,
+                                                   locationStatus: status,
+                                                   modelContext: modelContext) }
     }
 
-    private func deleteFave(weatherLocation: TodayWeatherUIModel) {
-        viewModel.deleteLocation(for: weatherLocation, modelContext: modelContext)
+    private func deleteFave(_ weather: TodayWeatherUIModel) {
+        viewModel.deleteLocation(for: weather,
+                                 modelContext: modelContext)
     }
-}
-
-
-#Preview {
-    WeatherListView()
-        .environmentObject(WeatherViewModel(dataSource: RemoteDataSource(client: WeatherClient())))
-        .modelContainer(for: TodayWeatherUIModel.self, inMemory: true)
 }

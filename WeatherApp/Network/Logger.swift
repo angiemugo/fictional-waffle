@@ -19,18 +19,12 @@ enum LogLevel: String, CaseIterable {
 extension LogLevel {
     internal var naturalIntegralValue: Int {
         switch self {
-        case .trace:
-            return 0
-        case .debug:
-            return 1
-        case .info:
-            return 2
-        case .notice:
-            return 3
-        case .warning:
-            return 4
-        case .error:
-            return 5
+        case .trace:return 0
+        case .debug:return 1
+        case .info:return 2
+        case .notice:return 3
+        case .warning:return 4
+        case .error:return 5
         }
     }
 }
@@ -78,10 +72,8 @@ final class Logger {
         log(level: .error, message())
     }
     
-    func log(
-        level: LogLevel,
-        _ message: @autoclosure () -> String
-    ) {
+    private func log(level: LogLevel,
+                     _ message: @autoclosure () -> String) {
         if self.level <= level {
             self.handler.log(level: level, message: message())
         }

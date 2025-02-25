@@ -8,7 +8,7 @@
 import Foundation
 
 struct URLBuilder {
-    let base = Network.baseURL
+    private let base = Network.baseURL
 
     func url(path: WeatherClientPaths, params: [String: String] = [:]) -> URL {
         guard let url = URL(string: path.rawValue, relativeTo: base) else {

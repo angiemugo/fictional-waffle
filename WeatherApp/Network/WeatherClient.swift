@@ -11,9 +11,7 @@ final class WeatherClient {
     let networkClient: NetworkClient
     let urlBuilder = URLBuilder()
 
-    var headers: Network.HTTPHeaders {
-        [:]
-    }
+    var headers: Network.HTTPHeaders { [:] }
 
     init(networkClient: NetworkClient = DefaultNetworkClient()) {
         self.networkClient = networkClient

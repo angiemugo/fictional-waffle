@@ -16,17 +16,21 @@ struct FavoriteMapView: View {
     @State private var currentLocation: CLLocationCoordinate2D?
     @Binding var savedLocations: [TodayWeatherUIModel]
     @Binding var presented: Bool
-    @StateObject var locationService = LocationService.shared
+    @ObservedObject var locationService = LocationService.shared
 
-    init(savedLocations: Binding<[TodayWeatherUIModel]>, presented: Binding<Bool>) {
+    init(savedLocations: Binding<[TodayWeatherUIModel]>,
+         presented: Binding<Bool>) {
         _savedLocations = savedLocations
         _presented = presented
     }
 
     var body: some View {
       let region = MKCoordinateRegion(
-            center: locationService.lastLocation?.coordinate ?? CLLocationCoordinate2D(),
-            span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
+            center: locationService.lastLocation?.coordinate
+            ?? CLLocationCoordinate2D(latitude: -1.286389,
+                                      longitude: 36.817223),
+            span: MKCoordinateSpan(latitudeDelta: 1,
+                                   longitudeDelta: 1)
         )
 
         NavigationView {
@@ -66,19 +70,4 @@ struct FavoriteMapView: View {
     func saveModel(_ location: CLLocationCoordinate2D) {
         viewModel.saveLocation(location: location, modelContext: modelContext)
     }
-}
-
-#Preview {
-    let day = TodayWeatherUIModel(id: 1740365084,
-                                  desc: "cloud",
-                                  min: 10,
-                                  current: 20,
-                                  max: 30,
-                                  latitude: 5,
-                                  longitude: 10,
-                                  isCurrentLocation: true,
-                                  locationName: "Nairobi")
-    FavoriteMapView(savedLocations: .constant([day]),
-                    presented: .constant(true))
-    .environmentObject(WeatherViewModel(dataSource: RemoteDataSource(client: WeatherClient())))
 }

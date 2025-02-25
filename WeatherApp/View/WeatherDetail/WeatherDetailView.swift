@@ -97,20 +97,3 @@ struct WeatherDetailView: View {
         Dictionary(grouping: weatherForecast, by: { $0.dayOfWeek })
     }
 }
-
-#Preview {
-    let day = TodayWeatherUIModel(id: 1740365084,
-                                  desc: "cloud",
-                                  min: 10,
-                                  current: 20,
-                                  max: 30,
-                                  latitude: 5,
-                                  longitude: 10,
-                                  isCurrentLocation: true,
-                                  locationName: "Nairobi")
-    WeatherDetailView(currentWeather: day)
-        .environmentObject(WeatherViewModel(dataSource:
-                                                RemoteDataSource(client: WeatherClient())))
-        .modelContainer(for: ForecastUIModel.self,
-                        inMemory: true)
-}
