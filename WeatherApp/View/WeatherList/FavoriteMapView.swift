@@ -18,15 +18,19 @@ struct FavoriteMapView: View {
     @Binding var presented: Bool
     @ObservedObject var locationService = LocationService.shared
 
-    init(savedLocations: Binding<[TodayWeatherUIModel]>, presented: Binding<Bool>) {
+    init(savedLocations: Binding<[TodayWeatherUIModel]>,
+         presented: Binding<Bool>) {
         _savedLocations = savedLocations
         _presented = presented
     }
 
     var body: some View {
       let region = MKCoordinateRegion(
-            center: locationService.lastLocation?.coordinate ?? CLLocationCoordinate2D(),
-            span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
+            center: locationService.lastLocation?.coordinate
+            ?? CLLocationCoordinate2D(latitude: -1.286389,
+                                      longitude: 36.817223),
+            span: MKCoordinateSpan(latitudeDelta: 1,
+                                   longitudeDelta: 1)
         )
 
         NavigationView {

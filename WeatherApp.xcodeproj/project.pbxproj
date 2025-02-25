@@ -42,6 +42,7 @@
 		FDECF22D2D6C4411001F2A28 /* View+Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDECF22C2D6C440C001F2A28 /* View+Weather.swift */; };
 		FDECF2302D6C4FE3001F2A28 /* PreviewSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDECF22F2D6C4FDB001F2A28 /* PreviewSampleData.swift */; };
 		FDECF2322D6C59A2001F2A28 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FDECF2312D6C59A2001F2A28 /* Preview Assets.xcassets */; };
+		FDECF2342D6DB144001F2A28 /* DataSourceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDECF2332D6DB13B001F2A28 /* DataSourceProtocol.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,7 @@
 		FDECF22C2D6C440C001F2A28 /* View+Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Weather.swift"; sourceTree = "<group>"; };
 		FDECF22F2D6C4FDB001F2A28 /* PreviewSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewSampleData.swift; sourceTree = "<group>"; };
 		FDECF2312D6C59A2001F2A28 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		FDECF2332D6DB13B001F2A28 /* DataSourceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceProtocol.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +157,7 @@
 		FDD62D1D2B68169200A58F2B /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				FDECF2332D6DB13B001F2A28 /* DataSourceProtocol.swift */,
 				FDD62D352B6907AD00A58F2B /* Models */,
 				FDD62D202B6816DD00A58F2B /* WeatherClientPaths.swift */,
 				FDD62D312B69058E00A58F2B /* LocationService.swift */,
@@ -357,6 +360,7 @@
 				FDD62D232B68170900A58F2B /* Logger.swift in Sources */,
 				FDD62D252B68175D00A58F2B /* Environment.swift in Sources */,
 				FD9C70E62B6A81910092DAAA /* RemoteDataSource.swift in Sources */,
+				FDECF2342D6DB144001F2A28 /* DataSourceProtocol.swift in Sources */,
 				FDECF1752D689541001F2A28 /* Bool+Weather.swift in Sources */,
 				FDD62D402B6913E100A58F2B /* TodayWeatherUIModel.swift in Sources */,
 				FDECF1792D6895D7001F2A28 /* BackgroundImage.swift in Sources */,

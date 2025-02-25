@@ -42,8 +42,8 @@ struct SnackbarView: View {
             }
         }
         .edgesIgnoringSafeArea(.bottom)
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        .onChange(of: show) { _, newValue in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 withAnimation {
                     show = false
                 }

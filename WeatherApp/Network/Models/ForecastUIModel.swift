@@ -8,7 +8,8 @@
 import SwiftUI
 import SwiftData
 
-@Model class ForecastUIModel {
+@Model
+final class ForecastUIModel {
     @Attribute(.unique) var id = UUID().uuidString
     var dayOfWeek: String
     var weather: String
@@ -85,8 +86,6 @@ enum WeatherColor: String {
             return Color(hex: "57575D")
         case .none:
             return Color(hex: "47AB2F")
-            
         }
-        
-    }
+            }
 }

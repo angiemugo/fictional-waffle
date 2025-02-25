@@ -9,7 +9,8 @@ import SwiftUI
 import CoreLocation
 import SwiftData
 
-@Model class TodayWeatherUIModel {
+@Model
+final class TodayWeatherUIModel {
     @Attribute(.unique) var id: Double
     var desc: String
     var min: Double

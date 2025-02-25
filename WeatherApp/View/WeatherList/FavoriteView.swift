@@ -23,10 +23,13 @@ struct FavouriteView: View {
                 Spacer()
 
                 VStack {
-                    Text(String(format: AppStrings.currentTemperature.rawValue, currentWeather.current))
+                    Text(String(format: AppStrings.currentTemperature.rawValue,
+                                currentWeather.current))
                     Spacer()
-                    Text(String(format: AppStrings.highTemperature.rawValue, currentWeather.max))
-                    Text(String(format: AppStrings.lowTemperature.rawValue, currentWeather.min))
+                    Text(String(format: AppStrings.highTemperature.rawValue,
+                                currentWeather.max))
+                    Text(String(format: AppStrings.lowTemperature.rawValue,
+                                currentWeather.min))
                 }
             }
         }
